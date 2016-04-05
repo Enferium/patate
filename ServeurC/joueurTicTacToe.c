@@ -8,9 +8,17 @@
 
 
 main(int argc, char **argv){
-	int sock, i, port;
-	int joueurActif;
 
+	/*
+	* verification des arguments
+	*/
+	if (argc != 4) {
+  		printf ("usage : joueurTicTacToe server no_port userName\n");
+  		return -1;
+	}
+
+	int sock, i, port;
+	
 	char nomAdv[MAX_CH];
 	TypSymbol symb;
 
@@ -25,15 +33,15 @@ main(int argc, char **argv){
 	sleep(2);
 	// DEMANDE DE PARTIE
 	printf("Demande\n" );
-	demandePartie(sock);
+	demandePartie(sock, argv[3]);
 	// Reception demande de partie
 	receptionPartie(sock, nomAdv, &symb);
 	
 	if(symb == CROIX) {
-			// Envoit d'un coup
-			printf("Envoit coup : ");
-			envoitCoup(sock, symb);
-		}
+		// Envoit d'un coup
+		printf("Envoit coup : ");
+		envoitCoup(sock, symb);
+	}
 	while(finPartie() != 1) {
 		
 		// Reception Coup Autre joueur

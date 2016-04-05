@@ -12,11 +12,11 @@ TypCoup pptCoup = CONT;
 
 void decoderCoup(TypCoupReq coup);
 
-void demandePartie(int sock) {
+void demandePartie(int sock, char* username) {
 	int err;
 	TypPartieReq demande;
+	strcpy(demande.nomJoueur, username);
 	demande.idRequest = PARTIE;
-	demande.nomJoueur[0]='T';demande.nomJoueur[1]='\0';
 	err = send(sock, &demande, sizeof(demande), 0);
 	if (err != sizeof(demande)) {
 		perror("joueurTicTacToe : erreur sur le send");

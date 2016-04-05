@@ -15,10 +15,10 @@ all: joueurTicTacToe serveurTicTacToe
 fonctionsTCP.o: fonctionsTCP.c fonctionsTCP.h
 	gcc -c fonctionsTCP.c
 
-joueurTicTacToe: joueurTicTacToe.c fonctionsTCP.h fonctionsTCP.o
+joueurTicTacToe: joueurTicTacToe.c fonctionJoueur.c fonctionsTCP.h fonctionsTCP.o
 	gcc fonctionsTCP.o joueurTicTacToe.c -o joueurTicTacToe  $(LD_FLAGS)
 
-serveurTicTacToe: serveurTicTacToe.c fonctionsTCP.h fonctionsTCP.o
+serveurTicTacToe: serveurTicTacToe.c fonctionServeur.c fonctionsTCP.h fonctionsTCP.o
 	gcc fonctionsTCP.o serveurTicTacToe.c -o serveurTicTacToe   $(LD_FLAGS)
 
 clean:

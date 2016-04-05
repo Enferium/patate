@@ -8,6 +8,8 @@
 #include "fonctionsTCP.h"
 #include "protocoleTicTacToe.h"
 
+void decoderCoup(TypCoupReq coup);
+
 int connexionJoueur(int* sockTrans, int sockConx){
 	*sockTrans = accept(sockConx,NULL,NULL);
 	printf("Connexion d'un joueur\n");
@@ -17,7 +19,7 @@ int connexionJoueur(int* sockTrans, int sockConx){
 	return 1;
 }
 
-int demandePartie(int sock, int sockTransJ1, int sockTransJ2){
+int demandePartie(int sock, int sockTransJ1, int sockTransJ2,TypSymbol* symbj1, TypSymbol* symbj2){
 		
 	int nfsd= FD_SETSIZE;
 	fd_set readSet;
@@ -100,14 +102,107 @@ int demandePartie(int sock, int sockTransJ1, int sockTransJ2){
 
     send(sockTransJ2,&reponseJ2,sizeof(TypPartieRep),0);
 
+    *symbj1 = reponseJ1.symb;
+    *symbj2 = reponseJ2.symb;
+
     return 0;
 }
 
-int receptionCoup(int sock, int sockTrans){
+int receptionCoup(int sock, int sockTrans1, int sockTrans2){
 
-    TypCoupReq coup;    
-    recv(sockTrans,&coup,sizeof(TypCoupReq),0);
+    TypCoupReq coup;
+    recv(sockTrans1,&coup,sizeof(TypCoupReq),0);
+
+    decoderCoup(coup);
+
     if(coup.idRequest == COUP){
-            printf("COUP");
+        printf("COUP");
+
+        send(sockTrans2,&coup,sizeof(TypCoupReq),0);
+
+
+        TypCoupRep rep;
+        rep.propCoup = CONT;
+        rep.validCoup = VALID;
+        rep.err = ERR_OK;
+
+        send(sockTrans1,&rep,sizeof(TypCoupRep),0);
+
+        send(sockTrans2,&rep,sizeof(TypCoupRep),0);
+
+        memset(&coup,0,sizeof(TypCoupReq));
+        memset(&rep,0,sizeof(TypPartieRep));
+
+        return 1;
+
+    }
+    return 1;
+}
+
+
+
+void decoderCoup(TypCoupReq coup) {
+
+    switch(coup.pos.numPlat) {
+        case I :
+            printf("I ");
+            break;
+        case B :
+            printf("B ");
+            break;
+        case C :
+            printf("C ");
+            break;
+        case D :
+            printf("D ");
+            break;
+        case E :
+            printf("E ");
+            break;
+        case F :
+            printf("F ");
+            break;
+        case G :
+            printf("G ");
+            break;
+        case H :
+            printf("H ");
+            break;
+        case A :
+            printf("A ");
+            break;
+        default :
+            break;
+    }
+    switch (coup.pos.numSousPlat) {
+        case UN :
+            printf("UN\n");
+            break;
+        case DEUX :
+            printf("DEUX\n");
+            break;
+        case TROIS :
+            printf("TROIS\n");
+            break;
+        case QUATRE :
+            printf("QUATRE\n");
+            break;
+        case CINQ :
+            printf("CINQ\n");
+            break;
+        case SIX :
+            printf("SIX\n");
+            break;
+        case SEPT :
+            printf("SEPT\n");
+            break;
+        case HUIT :
+            printf("HUIT\n");
+            break;
+        case NEUF :
+            printf("NEUF\n");
+            break;
+        default :
+            break;
     }
 }

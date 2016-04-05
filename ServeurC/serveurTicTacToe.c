@@ -17,6 +17,11 @@ int main(int argc, char** argv) {
   int sockTransJ2;       /* descripteur socket transmission */
   int port;            /* numero de port */
   int err;        /* code d'erreur */
+  TypSymbol symbJ1;
+  TypSymbol symbJ2;
+  int joueurActif;
+  int joueurInactif;
+  int joueurTmp;
 
 /*
 * verification des arguments
@@ -36,8 +41,26 @@ if (sockConx < 0) {
 connexionJoueur(&sockTransJ1, sockConx);
 connexionJoueur(&sockTransJ2, sockConx);
 
-demandePartie(sockConx, sockTransJ1, sockTransJ2);
+demandePartie(sockConx, sockTransJ1, sockTransJ2,&symbJ1,&symbJ2);
 
+if(symbJ1 == CROIX){
+	joueurActif = sockTransJ1;
+	joueurInactif = sockTransJ2;
+}else{
+	joueurActif = sockTransJ2;
+	joueurInactif = sockTransJ1;
+}
+int i=0;
+while(i<10){
+	printf("Coup n0:  %d\n",i );
+	receptionCoup(sockConx,joueurActif,joueurInactif);
+
+	joueurTmp = joueurInactif;
+	joueurInactif = joueurActif;
+	joueurActif = joueurTmp;
+
+	i++;
+}
 /* 
 * arret de la connexion et fermeture
 */

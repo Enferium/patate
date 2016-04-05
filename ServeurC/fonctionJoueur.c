@@ -8,7 +8,7 @@
 #include "fonctionsTCP.h"
 #include "protocoleTicTacToe.h"
 
-TypCoup pptCoup;
+TypCoup pptCoup = CONT;
 
 void decoderCoup(TypCoupReq coup);
 
@@ -36,8 +36,7 @@ int receptionPartie(int sock,char *nomAdversaire, TypSymbol* symbol){
 
 	if(reponse.symb == CROIX){
 		printf("Je suis la croix\n");
-	}
-	else{
+	} else {
 		printf("Je suis le rond\n");
 	}
 
@@ -56,7 +55,7 @@ void envoitCoup(int sock, TypSymbol symbol) {
 	pos.numPlat = D;
 	pos.numSousPlat = TROIS;
 	coup.pos = pos;
-	coup.nbSousPlatG;
+	coup.nbSousPlatG = 1;
 
 	decoderCoup(coup);
 
@@ -66,13 +65,15 @@ void envoitCoup(int sock, TypSymbol symbol) {
 		shutdown(sock, 2); close(sock);
 		exit(3);
 	}
+	TypCoupRep reponseCoup;
+	err = recv(sock, &reponseCoup, sizeof(reponseCoup), 0);
 }
 
 int receptionCoup(int sock) {
 	TypCoupRep reponseCoup;
 	TypCoupReq coupAdversaire;
-	int err1 = recv(sock, &coupAdversaire, sizeof(TypCoupReq), 0);
-	int err = recv(sock, &reponseCoup, sizeof(TypCoupRep), 0);
+	int err1 = recv(sock, &coupAdversaire, sizeof(coupAdversaire), 0);
+	int err = recv(sock, &reponseCoup, sizeof(reponseCoup), 0);
 	
 	decoderCoup(coupAdversaire);
 	pptCoup = reponseCoup.propCoup;
@@ -119,6 +120,8 @@ void decoderCoup(TypCoupReq coup) {
 		case A :
 			printf("A ");
 			break;
+		default :
+			break;
 	}
 	switch (coup.pos.numSousPlat) {
 		case UN :
@@ -147,6 +150,8 @@ void decoderCoup(TypCoupReq coup) {
 			break;
 		case NEUF :
 			printf("NEUF\n");
+			break;
+		default :
 			break;
 	}
 }

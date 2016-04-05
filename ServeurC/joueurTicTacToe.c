@@ -9,6 +9,7 @@
 
 main(int argc, char **argv){
 	int sock, i, port;
+	int joueurActif;
 
 	char nomAdv[MAX_CH];
 	TypSymbol symb;
@@ -28,14 +29,20 @@ main(int argc, char **argv){
 	// Reception demande de partie
 	receptionPartie(sock, nomAdv, &symb);
 	
-	if(symb == ROND) {
-		// Envoit d'un coup
-		printf("Envoit coup\n");
+	if(symb == CROIX) {
+			// Envoit d'un coup
+			printf("Envoit coup : ");
+			envoitCoup(sock, symb);
+		}
+	while(finPartie() != 1) {
+		
+		// Reception Coup Autre joueur
+		printf("Reception coup adversaire : ");
+		receptionCoup(sock);
+
+		printf("Envoit coup : ");
 		envoitCoup(sock, symb);
 	}
-	// Reception Coup Autre joueur
-	printf("Reception coup adversaire\n");
-	receptionCoup(sock);
 	
 
 	shutdown(sock, 2);

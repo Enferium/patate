@@ -8,6 +8,8 @@
 #include "fonctionsTCP.h"
 #include "protocoleTicTacToe.h"
 
+TypCoup pptCoup;
+
 void decoderCoup(TypCoupReq coup);
 
 void demandePartie(int sock) {
@@ -51,10 +53,13 @@ void envoitCoup(int sock, TypSymbol symbol) {
 	coup.idRequest = COUP;
 	coup.symbolJ = symbol;
 	TypCase pos;
-	pos.numPlat = C;
-	pos.numSousPlat = DEUX;
+	pos.numPlat = D;
+	pos.numSousPlat = TROIS;
 	coup.pos = pos;
 	coup.nbSousPlatG;
+
+	decoderCoup(coup);
+
 	err = send(sock, &coup, sizeof(coup), 0);
 	if (err != sizeof(coup)) {
 		perror("joueurTicTacToe : erreur sur le send");
@@ -70,40 +75,49 @@ int receptionCoup(int sock) {
 	int err = recv(sock, &reponseCoup, sizeof(TypCoupRep), 0);
 	
 	decoderCoup(coupAdversaire);
-	
+	pptCoup = reponseCoup.propCoup;
+
 	return 1;
+}
+
+int finPartie() {
+	if (pptCoup == CONT) {
+		return 0;
+	} else if (pptCoup == NULLE || pptCoup == GAGNANT || pptCoup == PERDU) {
+		return 1;
+	}
 }
 
 
 void decoderCoup(TypCoupReq coup) {
 
 	switch(coup.pos.numPlat) {
-		case A :
-			printf("A");
+		case I :
+			printf("I ");
 			break;
 		case B :
-			printf("B");
+			printf("B ");
 			break;
 		case C :
-			printf("C");
+			printf("C ");
 			break;
 		case D :
-			printf("D");
+			printf("D ");
 			break;
 		case E :
-			printf("E");
+			printf("E ");
 			break;
 		case F :
-			printf("F");
+			printf("F ");
 			break;
 		case G :
-			printf("G");
+			printf("G ");
 			break;
 		case H :
-			printf("H");
+			printf("H ");
 			break;
-		case I :
-			printf("I");
+		case A :
+			printf("A ");
 			break;
 	}
 	switch (coup.pos.numSousPlat) {

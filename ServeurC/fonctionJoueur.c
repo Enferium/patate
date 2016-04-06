@@ -11,6 +11,7 @@
 TypCoup pptCoup = CONT;
 
 void decoderCoup(TypCoupReq coup);
+void demandeCoupProlog(int *tabCoup);
 
 void demandePartie(int sock, char* username) {
 	int err;
@@ -47,6 +48,11 @@ int receptionPartie(int sock,char *nomAdversaire, TypSymbol* symbol){
 }
 
 void envoitCoup(int sock, TypSymbol symbol) {
+
+	int tabCoup[2];
+	demandeCoupProlog(tabCoup);
+	printf("\n\nCOUP RECU PROLOG : %d %d\n\n", tabCoup[0], tabCoup[1]);
+
 	int err;
 	TypCoupReq coup;
 	coup.idRequest = COUP;
@@ -57,6 +63,7 @@ void envoitCoup(int sock, TypSymbol symbol) {
 	coup.pos = pos;
 	coup.nbSousPlatG = 1;
 
+	// On affiche le coup que l'on envoit à l'adversaire
 	decoderCoup(coup);
 
 	err = send(sock, &coup, sizeof(coup), 0);
@@ -75,6 +82,7 @@ int receptionCoup(int sock) {
 	int err1 = recv(sock, &coupAdversaire, sizeof(coupAdversaire), 0);
 	int err = recv(sock, &reponseCoup, sizeof(reponseCoup), 0);
 	
+	// On affiche le coup que l'on reçoit de l'adversaire
 	decoderCoup(coupAdversaire);
 	pptCoup = reponseCoup.propCoup;
 
@@ -87,6 +95,18 @@ int finPartie() {
 	} else if (pptCoup == NULLE || pptCoup == GAGNANT || pptCoup == PERDU) {
 		return 1;
 	}
+}
+
+
+void demandeCoupProlog(int *tabCoup) {
+	int a,b;
+	int sockConx = socketServeur(8080);
+	int sockTrans = accept(sockConx,NULL,NULL);
+	recv(sockTrans, &a, sizeof(int), 0);
+	recv(sockTrans, &b, sizeof(int), 0);
+	close(sockConx);
+	tabCoup[0] = a;
+	tabCoup[1] = b;
 }
 
 

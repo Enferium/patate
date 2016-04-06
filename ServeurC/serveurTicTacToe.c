@@ -53,7 +53,9 @@ if(symbJ1 == CROIX){
 int i=0;
 while(i<10){
 	printf("Coup n0:  %d\n",i );
-	receptionCoup(sockConx,joueurActif,joueurInactif);
+	if(receptionCoup(sockConx,joueurActif,joueurInactif) == 0){
+    //TODO TEMPS DE REPONSE DEPASSER
+  }
 
 	joueurTmp = joueurInactif;
 	joueurInactif = joueurActif;

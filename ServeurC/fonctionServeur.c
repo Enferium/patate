@@ -4,6 +4,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <stdlib.h>
+#include <signal.h>
 
 #include "fonctionsTCP.h"
 #include "protocoleTicTacToe.h"
@@ -108,33 +109,49 @@ int demandePartie(int sock, int sockTransJ1, int sockTransJ2,TypSymbol* symbj1, 
     return 0;
 }
 
+
+
 int receptionCoup(int sock, int sockTrans1, int sockTrans2){
 
     TypCoupReq coup;
-    recv(sockTrans1,&coup,sizeof(TypCoupReq),0);
 
-    decoderCoup(coup);
+
+    struct timeval tv;
+
+    tv.tv_sec = 6;  /* 30 Secs Timeout */
+    tv.tv_usec = 0;  // Not init'ing this can cause strange errors
+    setsockopt(sockTrans1, SOL_SOCKET, SO_RCVTIMEO, (char *)&tv,sizeof(struct timeval));
+
+    int err = recv(sockTrans1,&coup,sizeof(TypCoupReq),0);
+    if(err < 0){
+        printf("ARBITRE : Erreur temps de 6 secondes dépasser\n");
+        return 0;
+    }
+    TraitementCoup(coup,sockTrans1,sockTrans2);
+    return 1;
+}
+
+int TraitementCoup(TypCoupReq coup, int sockTrans1, int sockTrans2){
 
     if(coup.idRequest == COUP){
-        printf("COUP");
-
+        printf("ARBITRE : Reçu Coup\n");
+        decoderCoup(coup);
+        printf("ARBITRE : Transmission Coup\n");
         send(sockTrans2,&coup,sizeof(TypCoupReq),0);
-
 
         TypCoupRep rep;
         rep.propCoup = CONT;
         rep.validCoup = VALID;
         rep.err = ERR_OK;
 
+        printf("ARBITRE : Envoie Validation \n");
         send(sockTrans1,&rep,sizeof(TypCoupRep),0);
-
+        printf("ARBITRE : Envoie Validation \n");
         send(sockTrans2,&rep,sizeof(TypCoupRep),0);
-
-        memset(&coup,0,sizeof(TypCoupReq));
-        memset(&rep,0,sizeof(TypPartieRep));
-
         return 1;
-
+    }else{
+        printf("ARBITRE : Erreur Attendu COUP, Reçu PARTIE");
+        return 0;
     }
     return 1;
 }

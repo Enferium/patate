@@ -51,7 +51,8 @@ void envoitCoup(int sock, TypSymbol symbol) {
 
 	int tabCoup[2];
 	demandeCoupProlog(tabCoup);
-	printf("\n\nCOUP RECU PROLOG : %d %d\n\n", tabCoup[0], tabCoup[1]);
+
+	// TODO : Fonction pour encoder le coup à partir de deux int
 
 	int err;
 	TypCoupReq coup;
@@ -100,14 +101,21 @@ int finPartie() {
 
 
 void demandeCoupProlog(int *tabCoup) {
+
+	int demandeCoupProlog = 10;
+	int socket = socketClient("localhost", 8080);
+	send(socket, &demandeCoupProlog, sizeof(demandeCoupProlog), 0);
+
 	int a,b;
-	int sockConx = socketServeur(8080);
-	int sockTrans = accept(sockConx,NULL,NULL);
-	recv(sockTrans, &a, sizeof(int), 0);
-	recv(sockTrans, &b, sizeof(int), 0);
-	close(sockConx);
+	recv(socket, &a, sizeof(a), 0);
+	recv(socket, &b, sizeof(b), 0);
+	close(socket);
+
 	tabCoup[0] = a;
 	tabCoup[1] = b;
+
+	printf("NUM PLATEAU PRO : %d\n", tabCoup[0]);
+
 }
 
 

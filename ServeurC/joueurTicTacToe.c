@@ -7,7 +7,7 @@
 #include "fonctionJoueur.c"
 
 
-main(int argc, char **argv){
+int main(int argc, char **argv){
 
 	/*
 	* verification des arguments
@@ -17,7 +17,7 @@ main(int argc, char **argv){
   		return -1;
 	}
 
-	int sock, i, port;
+	int sock, port;
 	
 	char nomAdv[MAX_CH];
 	TypSymbol symb;

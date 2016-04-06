@@ -1,25 +1,23 @@
 #########
 #
-# Makefile pour mini
+# Makefile
 #
 #########
 
-# For Solaris
-#LD_FLAGS = -lsocket -lnsl
 
 # For Linux
-LD_FLAGS =
+LD_FLAGS = -std=c99 -Wall -Wextra
 
 all: joueurTicTacToe serveurTicTacToe
 
 fonctionsTCP.o: fonctionsTCP.c fonctionsTCP.h
-	gcc -c fonctionsTCP.c
+	gcc -c -o fonctionsTCP.o fonctionsTCP.c
 
-joueurTicTacToe: joueurTicTacToe.c fonctionJoueur.c fonctionsTCP.h fonctionsTCP.o
-	gcc fonctionsTCP.o joueurTicTacToe.c -o joueurTicTacToe  $(LD_FLAGS)
+joueurTicTacToe: joueurTicTacToe.c fonctionJoueur.c fonctionsTCP.o
+	gcc joueurTicTacToe.c -o joueurTicTacToe fonctionsTCP.o $(LD_FLAGS)
 
-serveurTicTacToe: serveurTicTacToe.c fonctionServeur.c fonctionsTCP.h fonctionsTCP.o
-	gcc fonctionsTCP.o serveurTicTacToe.c -o serveurTicTacToe   $(LD_FLAGS)
+serveurTicTacToe: serveurTicTacToe.c fonctionServeur.h fonctionServeur.c fonctionsTCP.o
+	gcc serveurTicTacToe.c -o serveurTicTacToe  fonctionsTCP.o  $(LD_FLAGS)
 
 clean:
 	rm *~ ; rm -i \#* ; rm *.o; \

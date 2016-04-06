@@ -2,14 +2,15 @@
 #include <stdio.h>
 #include <errno.h>
 #include <sys/socket.h>
+#include <sys/select.h>
 #include <netinet/in.h>
 #include <stdlib.h>
 #include <signal.h>
 
+#include "fonctionServeur.h"
 #include "fonctionsTCP.h"
 #include "protocoleTicTacToe.h"
 
-void decoderCoup(TypCoupReq coup);
 
 int connexionJoueur(int* sockTrans, int sockConx){
 	*sockTrans = accept(sockConx,NULL,NULL);
@@ -20,7 +21,7 @@ int connexionJoueur(int* sockTrans, int sockConx){
 	return 1;
 }
 
-int demandePartie(int sock, int sockTransJ1, int sockTransJ2,TypSymbol* symbj1, TypSymbol* symbj2){
+int demandePartie(int sockTransJ1, int sockTransJ2,TypSymbol* symbj1, TypSymbol* symbj2){
 		
 	int nfsd= FD_SETSIZE;
 	fd_set readSet;
@@ -111,7 +112,7 @@ int demandePartie(int sock, int sockTransJ1, int sockTransJ2,TypSymbol* symbj1, 
 
 
 
-int receptionCoup(int sock, int sockTrans1, int sockTrans2){
+int receptionCoup(int sockTrans1, int sockTrans2){
 
     TypCoupReq coup;
 

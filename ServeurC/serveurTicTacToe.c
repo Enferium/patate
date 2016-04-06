@@ -1,13 +1,12 @@
-#include <string.h>
 #include <stdio.h>
-#include <errno.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
+#include <string.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include "fonctionsTCP.h"
 #include "protocoleTicTacToe.h"
 #include "fonctionServeur.c"
+#include "stdbool.h"
 /* taille du buffer de reception */
 
 int main(int argc, char** argv) {
@@ -16,12 +15,12 @@ int main(int argc, char** argv) {
   int sockTransJ1;
   int sockTransJ2;       /* descripteur socket transmission */
   int port;            /* numero de port */
-  int err;        /* code d'erreur */
   TypSymbol symbJ1;
   TypSymbol symbJ2;
   int joueurActif;
   int joueurInactif;
   int joueurTmp;
+  bool tmpDepasser = false;
 
 /*
 * verification des arguments
@@ -41,7 +40,7 @@ if (sockConx < 0) {
 connexionJoueur(&sockTransJ1, sockConx);
 connexionJoueur(&sockTransJ2, sockConx);
 
-demandePartie(sockConx, sockTransJ1, sockTransJ2,&symbJ1,&symbJ2);
+demandePartie(sockTransJ1, sockTransJ2,&symbJ1,&symbJ2);
 
 if(symbJ1 == CROIX){
 	joueurActif = sockTransJ1;
@@ -51,10 +50,10 @@ if(symbJ1 == CROIX){
 	joueurInactif = sockTransJ1;
 }
 int i=0;
-while(i<10){
+while(i<10 || tmpDepasser == false){
 	printf("Coup n0:  %d\n",i );
-	if(receptionCoup(sockConx,joueurActif,joueurInactif) == 0){
-    //TODO TEMPS DE REPONSE DEPASSER
+	if(receptionCoup(joueurActif,joueurInactif) == 0){
+    tmpDepasser = true;
   }
 
 	joueurTmp = joueurInactif;

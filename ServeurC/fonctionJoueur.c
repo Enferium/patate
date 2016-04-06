@@ -29,7 +29,7 @@ void demandePartie(int sock, char* username) {
 int receptionPartie(int sock,char *nomAdversaire, TypSymbol* symbol){
 
 	TypPartieRep reponse;
-	int err = recv(sock,&reponse,sizeof(TypPartieRep),0);
+	recv(sock,&reponse,sizeof(TypPartieRep),0);
 
 	*symbol = reponse.symb;
 	strcpy(nomAdversaire,reponse.nomAdvers);
@@ -79,8 +79,8 @@ void envoitCoup(int sock, TypSymbol symbol) {
 int receptionCoup(int sock) {
 	TypCoupRep reponseCoup;
 	TypCoupReq coupAdversaire;
-	int err1 = recv(sock, &coupAdversaire, sizeof(coupAdversaire), 0);
-	int err = recv(sock, &reponseCoup, sizeof(reponseCoup), 0);
+	recv(sock, &coupAdversaire, sizeof(coupAdversaire), 0);
+	recv(sock, &reponseCoup, sizeof(reponseCoup), 0);
 	
 	// On affiche le coup que l'on reçoit de l'adversaire
 	decoderCoup(coupAdversaire);
@@ -95,6 +95,7 @@ int finPartie() {
 	} else if (pptCoup == NULLE || pptCoup == GAGNANT || pptCoup == PERDU) {
 		return 1;
 	}
+	return 1;
 }
 
 

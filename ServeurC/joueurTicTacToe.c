@@ -43,6 +43,7 @@ int main(int argc, char **argv){
 		envoitCoup(sock, symb);
 	}
 	while(finPartie() != 1) {
+		sleep(7);
 		// Reception Coup Autre joueur
 		printf("Reception coup adversaire : ");
 		receptionCoup(sock);

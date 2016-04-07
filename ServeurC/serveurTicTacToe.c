@@ -46,6 +46,7 @@ while(i<10 && tmpDepasser == false){
 	printf("Coup n0:  %d\n",i );
 	if(receptionCoup(joueurActif,joueurInactif) == 0){
     tmpDepasser = true;
+    envoyerTempsDepasser(joueurActif,joueurInactif);
   }
 
 	joueurTmp = joueurInactif;
@@ -54,6 +55,7 @@ while(i<10 && tmpDepasser == false){
 
 	i++;
 }
+
 /* 
 * arret de la connexion et fermeture
 */

@@ -73,8 +73,17 @@ int receptionCoup(int sock) {
 	recv(sock, &coupAdversaire, sizeof(coupAdversaire), 0);
 	recv(sock, &reponseCoup, sizeof(reponseCoup), 0);
 	
+
+	if(reponseCoup.validCoup == VALID){
+		decoderCoup(coupAdversaire);
+	}else if(reponseCoup.validCoup == TIMEOUT){
+		printf("Le joueur adversaire est en TIMEOUT\n");
+	}else if(reponseCoup.validCoup == TRICHE){
+		
+	}
+
 	// On affiche le coup que l'on reçoit de l'adversaire
-	decoderCoup(coupAdversaire);
+	
 	pptCoup = reponseCoup.propCoup;
 
 	return 1;

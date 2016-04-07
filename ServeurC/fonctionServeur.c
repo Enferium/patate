@@ -158,6 +158,27 @@ int TraitementCoup(TypCoupReq coup, int sockTrans1, int sockTrans2){
 }
 
 
+int envoyerTempsDepasser(int sockTrans1, int sockTrans2){
+    TypCoupRep rep;
+
+    rep.err = ERR_COUP;
+    rep.validCoup = TIMEOUT;
+    rep.propCoup = PERDU;
+
+    send(sockTrans1,&rep,sizeof(TypCoupRep),0);
+
+    TypCoupReq req;
+    req.idRequest = COUP;
+
+    send(sockTrans2,&req,sizeof(TypCoupReq),0);
+
+
+    rep.propCoup = GAGNANT;
+    send(sockTrans2,&req,sizeof(TypCoupRep),0);
+
+    return 1;
+}
+
 
 void decoderCoup(TypCoupReq coup) {
 

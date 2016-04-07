@@ -62,6 +62,15 @@ void envoitCoup(int sock, TypSymbol symbol, int portJava) {
 	}
 	TypCoupRep reponseCoup;
 	err = recv(sock, &reponseCoup, sizeof(reponseCoup), 0);
+
+	if(reponseCoup.validCoup == VALID){
+			printf("Coup Valide\n");
+	}else if(reponseCoup.validCoup == TIMEOUT){
+		printf("Je suis en TIMEOUT\n");
+	}else if(reponseCoup.validCoup == TRICHE){
+		
+	}
+	pptCoup = reponseCoup.propCoup;
 }
 
 int receptionCoup(int sock) {

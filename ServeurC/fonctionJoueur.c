@@ -37,10 +37,10 @@ int receptionPartie(int sock,char *nomAdversaire, TypSymbol* symbol){
 
 }
 
-void envoitCoup(int sock, TypSymbol symbol, int portJava) {
+void envoitCoup(int sock, TypSymbol symbol, int socketJava) {
 
 	int tabCoup[2];
-	demandeCoupProlog(tabCoup, portJava);
+	demandeCoupProlog(tabCoup, socketJava);
 
 	TypCase pos = encoderCoup(tabCoup[0], tabCoup[1]);
 
@@ -105,13 +105,7 @@ int finPartie() {
 }
 
 
-void demandeCoupProlog(int *tabCoup, int portJava) {
-
-	int sock = socketClient("localhost", portJava);
-	if (sock < 0) { 
-	    printf("client : erreur socketClient\n");
-	    exit(2);
-	}
+void demandeCoupProlog(int *tabCoup, int sock) {
 
 	int demandeCoupProlog = 10;
 	send(sock, &demandeCoupProlog, sizeof(int), 0);
@@ -131,8 +125,6 @@ void demandeCoupProlog(int *tabCoup, int portJava) {
 	for ( i=0; i<(k/4); i++ ) {
 		tabCoup[i] = ntohl(myints[i]);
 	}
-
-	close(sock);
 
 }
 

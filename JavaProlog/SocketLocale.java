@@ -3,39 +3,45 @@ import java.io.* ;
 
 class SocketLocale extends Thread {
 
-	private int numPort;
+	Socket connectionSocket;
+	boolean isConnected = false;
 
 	public SocketLocale(int numPort) {
-		this.numPort = numPort;
+		try {
+			ServerSocket welcomeSocket = new ServerSocket(numPort);
+			connectionSocket = welcomeSocket.accept();
+			System.out.println(getName() + " welcomeSocket.accept() called");
+			isConnected = true;
+		} catch (IOException e) {
+			System.out.println(getName() + " CONNECTION");
+			e.printStackTrace();
+		}
 	}
 
 	public void run() {
 
 		try {
 
-			ServerSocket welcomeSocket = new ServerSocket(numPort);
+			while (true) {
+				if (isConnected) {
+					DataInputStream inToClient = new DataInputStream(connectionSocket.getInputStream());
+					if (inToClient.read() == 10) {
+						System.out.println("Demande de coup : " + getName());
+						DataOutputStream outToClient = new DataOutputStream(connectionSocket.getOutputStream());
 
-			Socket connectionSocket = welcomeSocket.accept();
-			System.out.println("welcomeSocket.accept() called");
-
-			DataInputStream inToClient = new DataInputStream(connectionSocket.getInputStream());
-			while (inToClient.read() == 10) {
-
-				    DataOutputStream outToClient = new DataOutputStream(connectionSocket.getOutputStream());
-
-				    // Premier int = NUM PLATEAU
-				    outToClient.writeInt(5);
-				    // NUM SOUS PLATEAU
-				    outToClient.writeInt(5);
-				    // Coup envoyé E CINQ
-				    outToClient.close();
-				    connectionSocket.close();
-
-			}
-			
-			welcomeSocket.close();
-			
+						// Premier int = NUM PLATEAU
+						outToClient.writeInt(5);
+						// NUM SOUS PLATEAU
+						outToClient.writeInt(5);
+						// Coup envoyé E CINQ
+						outToClient.close();
+					}
+					inToClient.close();
+				}
+			}	
+						
 		} catch (IOException e) {
+			System.out.println(getName() + " RECEPTION 10");
 			e.printStackTrace();
 		}
   	}

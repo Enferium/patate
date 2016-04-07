@@ -1,36 +1,42 @@
-import java.net.Socket; import java.net.ServerSocket;
-import java.io.*;
-import java.util.*;
+import java.net.* ;
+import java.io.* ;
 
-public class SocketLocale {
+class SocketLocale extends Thread {
 
-	public static void main(String[] args) {
+	private int numPort;
 
-		try {
-			ServerSocket socketServeur = new ServerSocket(8080);
-			Socket sockComm = socketServeur.accept();
-			System.out.println("Socket Locale : Client c connecté");
-
-			InputStream is = sockComm.getInputStream();
-			OutputStream os = sockComm.getOutputStream();
-
-            while (is.read() == 10) {
-            	System.out.println("Demande de coup OK");
-            	// On consulte le prolog pour avoir un coup
-
-            	// On envoit le coup
-            	System.out.println("Coup : " + 2 + " " + 1);
-        		os.write(2);
-        		os.write(1);
-        		
-            }
-
-            socketServeur.close();
-		
-		} catch(IOException e) {
-			e.printStackTrace();
-		}
-
+	public SocketLocale(int numPort) {
+		this.numPort = numPort;
 	}
 
+	public void run() {
+
+		try {
+
+			ServerSocket welcomeSocket = new ServerSocket(numPort);
+
+			Socket connectionSocket = welcomeSocket.accept();
+			System.out.println("welcomeSocket.accept() called");
+
+			DataInputStream inToClient = new DataInputStream(connectionSocket.getInputStream());
+			while (inToClient.read() == 10) {
+
+				    DataOutputStream outToClient = new DataOutputStream(connectionSocket.getOutputStream());
+
+				    // Premier int = NUM PLATEAU
+				    outToClient.writeInt(5);
+				    // NUM SOUS PLATEAU
+				    outToClient.writeInt(5);
+				    // Coup envoyé A DEUX
+				    outToClient.close();
+				    connectionSocket.close();
+
+			}
+			
+			welcomeSocket.close();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+  	}
 }

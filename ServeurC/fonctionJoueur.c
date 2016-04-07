@@ -37,20 +37,17 @@ int receptionPartie(int sock,char *nomAdversaire, TypSymbol* symbol){
 
 }
 
-void envoitCoup(int sock, TypSymbol symbol) {
+void envoitCoup(int sock, TypSymbol symbol, int portJava) {
 
 	int tabCoup[2];
-	demandeCoupProlog(tabCoup);
+	demandeCoupProlog(tabCoup, portJava);
 
-	// TODO : Fonction pour encoder le coup à partir de deux int
+	TypCase pos = encoderCoup(tabCoup[0], tabCoup[1]);
 
 	int err;
 	TypCoupReq coup;
 	coup.idRequest = COUP;
 	coup.symbolJ = symbol;
-	TypCase pos;
-	pos.numPlat = D;
-	pos.numSousPlat = TROIS;
 	coup.pos = pos;
 	coup.nbSousPlatG = 1;
 
@@ -90,21 +87,34 @@ int finPartie() {
 }
 
 
-void demandeCoupProlog(int *tabCoup) {
+void demandeCoupProlog(int *tabCoup, int portJava) {
+
+	int sock = socketClient("localhost", portJava);
+	if (sock < 0) { 
+	    printf("client : erreur socketClient\n");
+	    exit(2);
+	}
 
 	int demandeCoupProlog = 10;
-	int socket = socketClient("localhost", 8080);
-	send(socket, &demandeCoupProlog, sizeof(demandeCoupProlog), 0);
+	send(sock, &demandeCoupProlog, sizeof(int), 0);
 
-	int a,b;
-	recv(socket, &a, sizeof(a), 0);
-	recv(socket, &b, sizeof(b), 0);
-	close(socket);
+	char intBufferCoupReq[1024];
+	memset(intBufferCoupReq, '\0', sizeof(intBufferCoupReq));
 
-	tabCoup[0] = a;
-	tabCoup[1] = b;
+	int k = 0;
+	while ( 1 ) { 
+	    int nbytes = recv(sock, &intBufferCoupReq[k], sizeof(intBufferCoupReq), 0); 
+	    if ( nbytes == -1 ) { break; }
+	    k++;
+	}
 
-	printf("NUM PLATEAU PRO : %d\n", tabCoup[0]);
+	int *myints = (int*) intBufferCoupReq;
+	int i = 0;
+	for ( i=0; i<(k/4); i++ ) {
+		tabCoup[i] = ntohl(myints[i]);
+	}
+
+	close(sock);
 
 }
 
@@ -173,4 +183,72 @@ void decoderCoup(TypCoupReq coup) {
 		default :
 			break;
 	}
+}
+
+TypCase encoderCoup(int numPlat, int numSousPlat) {
+
+	TypCase pos;
+	switch(numPlat) {
+		case 1 :
+			pos.numPlat = A;
+			break;
+		case 2 :
+			pos.numPlat = B;
+			break;
+		case 3 :
+			pos.numPlat = C;
+			break;
+		case 4 :
+			pos.numPlat = D;
+			break;
+		case 5 :
+			pos.numPlat = E;
+			break;
+		case 6 :
+			pos.numPlat = F;
+			break;
+		case 7 :
+			pos.numPlat = G;
+			break;
+		case 8 :
+			pos.numPlat = H;
+			break;
+		case 9 :
+			pos.numPlat = I;
+			break;
+	}
+
+	switch(numSousPlat) {
+		case 1 :
+			pos.numSousPlat = UN;
+			break;
+		case 2 :
+			pos.numSousPlat = DEUX;
+			break;
+		case 3 :
+			pos.numSousPlat = TROIS;
+			break;
+		case 4 :
+			pos.numSousPlat = QUATRE;
+			break;
+		case 5 :
+			pos.numSousPlat = CINQ;
+			break;
+		case 6 :
+			pos.numSousPlat = SIX;
+			break;
+		case 7 :
+			pos.numSousPlat = SEPT;
+			break;
+		case 8 :
+			pos.numSousPlat = HUIT;
+			break;
+		case 9 :
+			pos.numSousPlat = NEUF;
+			break;
+
+	}
+
+	return pos;
+
 }

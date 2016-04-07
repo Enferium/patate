@@ -12,8 +12,8 @@ int main(int argc, char **argv){
 	/*
 	* verification des arguments
 	*/
-	if (argc != 4) {
-  		printf ("usage : joueurTicTacToe server no_port userName\n");
+	if (argc != 5) {
+  		printf ("usage : joueurTicTacToe server no_port userName portJava\n");
   		return -1;
 	}
 
@@ -23,6 +23,7 @@ int main(int argc, char **argv){
 	TypSymbol symb;
 
 	port = atoi(argv[2]);
+	int portJava = atoi(argv[4]);
 
 	sock = socketClient(argv[1], port);
 	if (sock < 0) {      
@@ -40,7 +41,7 @@ int main(int argc, char **argv){
 	if(symb == CROIX) {
 		// Envoit d'un coup
 		printf("Envoit coup : ");
-		envoitCoup(sock, symb);
+		envoitCoup(sock, symb, portJava);
 	}
 	while(finPartie() != 1) {
 		// Reception Coup Autre joueur
@@ -48,7 +49,7 @@ int main(int argc, char **argv){
 		receptionCoup(sock);
 
 		printf("Envoit coup : ");
-		envoitCoup(sock, symb);
+		envoitCoup(sock, symb, portJava);
 	}
 	
 

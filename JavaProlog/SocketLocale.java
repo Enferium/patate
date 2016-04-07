@@ -27,7 +27,7 @@ class SocketLocale extends Thread {
 				    outToClient.writeInt(5);
 				    // NUM SOUS PLATEAU
 				    outToClient.writeInt(5);
-				    // Coup envoyé A DEUX
+				    // Coup envoyé E CINQ
 				    outToClient.close();
 				    connectionSocket.close();
 

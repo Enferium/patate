@@ -33,23 +33,26 @@ int main(int argc, char **argv){
 
 	sleep(2);
 	// DEMANDE DE PARTIE
-	printf("Demande\n" );
+	printf("\n------------ DEMANDE PARTIE ----------------\n");
 	demandePartie(sock, argv[3]);
 	// Reception demande de partie
 	receptionPartie(sock, nomAdv, &symb);
 	
 	if(symb == CROIX) {
 		// Envoit d'un coup
-		printf("Envoit coup : ");
+		printf("\n------------ ENVOIT COUP -----------------\n");
+		printf("COUP : ");
 		envoitCoup(sock, symb, portJava);
 	}
 	while(finPartie() != 1) {
-		sleep(7);
+		//sleep(7);
 		// Reception Coup Autre joueur
-		printf("Reception coup adversaire : ");
+		printf("\n------------ RECEPTION COUP OPPONENT -------------------\n");
+		printf("COUP : ");
 		receptionCoup(sock);
 
-		printf("Envoit coup : ");
+		printf("\n------------ ENVOIT COUP -----------------\n");
+		printf("COUP : ");
 		envoitCoup(sock, symb, portJava);
 	}
 	

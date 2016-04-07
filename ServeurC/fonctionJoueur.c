@@ -1,17 +1,7 @@
-#include <string.h>
-#include <stdio.h>
-#include <errno.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <stdlib.h>
-
-#include "fonctionsTCP.h"
-#include "protocoleTicTacToe.h"
+#include "fonctionJoueur.h"
 
 TypCoup pptCoup = CONT;
 
-void decoderCoup(TypCoupReq coup);
-void demandeCoupProlog(int *tabCoup);
 
 void demandePartie(int sock, char* username) {
 	int err;

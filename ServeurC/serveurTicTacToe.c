@@ -1,12 +1,4 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <unistd.h>
-
-#include "fonctionsTCP.h"
-#include "protocoleTicTacToe.h"
 #include "fonctionServeur.c"
-#include "stdbool.h"
 /* taille du buffer de reception */
 
 int main(int argc, char** argv) {
@@ -34,7 +26,7 @@ port  = atoi(argv[1]);
 
 sockConx = socketServeur(port);
 if (sockConx < 0) {
-  printf("Erreur démarrage serveur !\n");
+  printf("/!\\Erreur démarrage serveur !\n");
 }
 
 connexionJoueur(&sockTransJ1, sockConx);
@@ -50,7 +42,7 @@ if(symbJ1 == CROIX){
 	joueurInactif = sockTransJ1;
 }
 int i=0;
-while(i<10 || tmpDepasser == false){
+while(i<10 && tmpDepasser == false){
 	printf("Coup n0:  %d\n",i );
 	if(receptionCoup(joueurActif,joueurInactif) == 0){
     tmpDepasser = true;
@@ -65,6 +57,7 @@ while(i<10 || tmpDepasser == false){
 /* 
 * arret de la connexion et fermeture
 */
+printf("ARBITRE : Fermeture du serveur\n");
 close(sockConx);
 
 return 0;

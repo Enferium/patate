@@ -30,13 +30,13 @@ int main(int argc, char **argv){
 		printf("joueurTicTacToe : erreur socketClient\n");
 		exit(2);
 	}
-	int socketJava = socketClient("localhost", portJava);
+	int socketJava = socketClient(argv[1], portJava);
 	if (socketJava < 0) { 
 	    printf("client : erreur socket comm JAVA\n");
 	    exit(2);
 	}
 
-	//sleep(2);
+	sleep(2);
 	// DEMANDE DE PARTIE
 	printf("\n------------ DEMANDE PARTIE ----------------\n");
 	demandePartie(sock, argv[3]);

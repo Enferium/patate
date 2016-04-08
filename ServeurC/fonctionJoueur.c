@@ -108,17 +108,20 @@ int finPartie() {
 void demandeCoupProlog(int *tabCoup, int sock) {
 
 	int demandeCoupProlog = 10;
+	printf("Envoit demande %d\n", demandeCoupProlog);
 	send(sock, &demandeCoupProlog, sizeof(int), 0);
 
 	char intBufferCoupReq[1024];
 	memset(intBufferCoupReq, '\0', sizeof(intBufferCoupReq));
 
 	int k = 0;
-	while ( 1 ) { 
-	    int nbytes = recv(sock, &intBufferCoupReq[k], sizeof(intBufferCoupReq), 0); 
-	    if ( nbytes == -1 ) { break; }
-	    k++;
-	}
+	while ( k < 8 ) { 
+   		int nbytes = recv(sock, &intBufferCoupReq[k], 1, 0); 
+   		//printf("%d\n", nbytes);
+    	if ( nbytes == -1 ) { printf("recv error\n"); break; }
+    	if ( nbytes ==  0 ) { printf("recv done\n"); break; }
+    	k++;
+	} 
 
 	int *myints = (int*) intBufferCoupReq;
 	int i = 0;

@@ -9,10 +9,22 @@ int main(int argc, char** argv) {
   int port;            /* numero de port */
   TypSymbol symbJ1;
   TypSymbol symbJ2;
-  int joueurActif;
-  int joueurInactif;
-  int joueurTmp;
+  
   bool tmpDepasser = false;
+
+  char nomJ1[MAX_CH];
+  char nomJ2[MAX_CH];
+
+ typedef struct
+   {
+   char nom[MAX_CH];
+   int socket;
+   TypSymbol symbol;
+   }TypJoueur;
+
+   TypJoueur joueurActif;
+   TypJoueur joueurInactif;
+   TypJoueur joueurTmp;
 
 /*
 * verification des arguments
@@ -26,27 +38,35 @@ port  = atoi(argv[1]);
 
 sockConx = socketServeur(port);
 if (sockConx < 0) {
-  printf("/!\\Erreur démarrage serveur !\n");
+  printf("Erreur démarrage serveur !\n");
 }
 
 connexionJoueur(&sockTransJ1, sockConx);
 connexionJoueur(&sockTransJ2, sockConx);
 
-demandePartie(sockTransJ1, sockTransJ2,&symbJ1,&symbJ2);
+demandePartie(sockTransJ1, sockTransJ2,&symbJ1,&symbJ2,nomJ1,nomJ2);
 
 if(symbJ1 == CROIX){
-	joueurActif = sockTransJ1;
-	joueurInactif = sockTransJ2;
+	joueurActif.socket = sockTransJ1;
+  strcpy(joueurActif.nom,nomJ1);
+  joueurActif.symbol = symbJ1;
+	joueurInactif.socket = sockTransJ2;
+  strcpy(joueurActif.nom,nomJ2);
+  joueurInactif.symbol = symbJ2;
 }else{
-	joueurActif = sockTransJ2;
-	joueurInactif = sockTransJ1;
+	joueurActif.socket = sockTransJ2;
+  strcpy(joueurActif.nom,nomJ2);
+  joueurActif.symbol = symbJ2;
+  joueurInactif.socket = sockTransJ1;
+  strcpy(joueurActif.nom,nomJ1);
+  joueurInactif.symbol = symbJ1;
 }
 int i=0;
 while(i<10 && tmpDepasser == false){
-	printf("Coup n0:  %d\n",i );
-	if(receptionCoup(joueurActif,joueurInactif) == 0){
+	printf("Coup n°:  %d\n",i );
+	if(receptionCoup(joueurActif.socket,joueurInactif.socket) == 0){
     tmpDepasser = true;
-    envoyerTempsDepasser(joueurActif,joueurInactif);
+    envoyerTempsDepasser(joueurActif.socket,joueurInactif.socket);
   }
 
 	joueurTmp = joueurInactif;
@@ -55,6 +75,9 @@ while(i<10 && tmpDepasser == false){
 
 	i++;
 }
+
+printf("JOUEUR GAGNANT %s\n",joueurInactif.nom);
+printf("JOUEUR PERDANT %s\n",joueurActif.nom );
 
 /* 
 * arret de la connexion et fermeture

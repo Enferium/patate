@@ -21,7 +21,7 @@ int connexionJoueur(int* sockTrans, int sockConx){
 	return 1;
 }
 
-int demandePartie(int sockTransJ1, int sockTransJ2,TypSymbol* symbj1, TypSymbol* symbj2){
+int demandePartie(int sockTransJ1, int sockTransJ2,TypSymbol* symbj1, TypSymbol* symbj2, char* nomJ1, char* nomJ2){
 		
 	int nfsd= FD_SETSIZE;
 	fd_set readSet;
@@ -50,7 +50,7 @@ int demandePartie(int sockTransJ1, int sockTransJ2,TypSymbol* symbj1, TypSymbol*
 
 			reponseJ1.err = ERR_OK;
 			strcpy(reponseJ2.nomAdvers,demandeJ1.nomJoueur);
-
+            strcpy(nomJ1,demandeJ1.nomJoueur);
 
   			printf("Joueur 1 demande partie\n");
 		}else{
@@ -67,6 +67,7 @@ int demandePartie(int sockTransJ1, int sockTransJ2,TypSymbol* symbj1, TypSymbol*
 			reponseJ1.symb = ROND;
 
 			strcpy(reponseJ1.nomAdvers ,demandeJ2.nomJoueur);
+            strcpy(nomJ2,demandeJ2.nomJoueur);
 			reponseJ2.err = ERR_OK;
   			printf("Joueur 2 demande partie\n");
 		}else{
@@ -82,6 +83,7 @@ int demandePartie(int sockTransJ1, int sockTransJ2,TypSymbol* symbj1, TypSymbol*
   			printf("Joueur 1 demande partie\n");
   			reponseJ1.err = ERR_OK;
   			strcpy(reponseJ2.nomAdvers, demandeJ1.nomJoueur);
+            strcpy(nomJ1,demandeJ1.nomJoueur);
 
     	}else{
     		reponseJ1.err = ERR_PARTIE;
@@ -93,6 +95,7 @@ int demandePartie(int sockTransJ1, int sockTransJ2,TypSymbol* symbj1, TypSymbol*
     		printf("Joueur 2 demande partie\n");
     		reponseJ2.err = ERR_OK;
     		strcpy(reponseJ1.nomAdvers , demandeJ2.nomJoueur);
+            strcpy(nomJ2,demandeJ2.nomJoueur);
 
     	}else{
     		reponseJ2.err = ERR_PARTIE;
@@ -106,6 +109,9 @@ int demandePartie(int sockTransJ1, int sockTransJ2,TypSymbol* symbj1, TypSymbol*
 
     *symbj1 = reponseJ1.symb;
     *symbj2 = reponseJ2.symb;
+
+    printf("Le joueur 1 est %s\n",nomJ1 );
+    printf("Le joueur 2 est %s\n",nomJ2 );
 
     return 0;
 }

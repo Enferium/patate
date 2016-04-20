@@ -45,7 +45,7 @@ int main(int argc, char **argv){
 		envoitCoup(sock, symb, portJava);
 	}
 	while(finPartie() != 1) {
-		//sleep(7);
+		sleep(7);
 		// Reception Coup Autre joueur
 		printf("\n------------ RECEPTION COUP OPPONENT -------------------\n");
 		printf("COUP : ");

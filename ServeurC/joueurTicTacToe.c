@@ -51,17 +51,19 @@ int main(int argc, char **argv){
 	}
 
 	while(finPartie() != 1) {
-		sleep(7);
 		// Reception Coup Autre joueur
 		printf("\n------------ RECEPTION COUP OPPONENT -------------------\n");
 		printf("COUP : ");
 		receptionCoup(sock);
 
-		printf("\n------------ ENVOIT COUP -----------------\n");
-		printf("COUP : ");
-		envoitCoup(sock, symb, socketJava);
+		if(finPartie() !=1){
+			printf("\n------------ ENVOIT COUP -----------------\n");
+			printf("COUP : ");
+			envoitCoup(sock, symb, socketJava);
+		}
 	}
 	
+	final();
 
 	shutdown(sock, 2);
 	close(sock);

@@ -16,6 +16,17 @@ void demandePartie(int sock, char* username) {
 	}
 }
 
+
+void final(){
+	if(pptCoup == GAGNANT){
+		printf("J'ai gagné\n");
+	}else if(pptCoup == PERDU){
+		printf("J'ai perdu\n");
+	}else if(pptCoup == NULLE){
+		printf("Nous avont fait match nul\n");
+	}
+}
+
 int receptionPartie(int sock,char *nomAdversaire, TypSymbol* symbol){
 
 	TypPartieRep reponse;
@@ -37,19 +48,43 @@ int receptionPartie(int sock,char *nomAdversaire, TypSymbol* symbol){
 
 }
 
+
+
+TypCase inputCoup(){
+	int sp;
+	int p;
+	printf("PLATEAU : 1, 2, 3, 4, 5, 6, 7, 8, 9\n");
+	scanf("%d", &p);
+	printf("Case du sous plateau %c : 1,2,3,4,5,6,7,8,9\n",sp );
+	scanf("%d",&sp);
+
+	TypCase tmp = encoderCoup(p,sp);
+
+	TypCase cas;
+	cas.numPlat = tmp.numPlat;
+	cas.numSousPlat = tmp.numSousPlat;
+
+	return cas;
+
+}
+
+
+
 void envoitCoup(int sock, TypSymbol symbol, int socketJava) {
 
 	int tabCoup[2];
-	demandeCoupProlog(tabCoup, socketJava);
+	/*demandeCoupProlog(tabCoup, socketJava);
 
-	TypCase pos = encoderCoup(tabCoup[0], tabCoup[1]);
+	TypCase pos = encoderCoup(tabCoup[0], tabCoup[1]);*/
+
+	TypCase pos = inputCoup();
 
 	int err;
 	TypCoupReq coup;
 	coup.idRequest = COUP;
 	coup.symbolJ = symbol;
 	coup.pos = pos;
-	coup.nbSousPlatG = 1;
+	coup.nbSousPlatG = 0;
 
 	// On affiche le coup que l'on envoit à l'adversaire
 	decoderCoup(coup);
@@ -89,8 +124,13 @@ int receptionCoup(int sock) {
 	}
 
 	// On affiche le coup que l'on reçoit de l'adversaire
-	
-	pptCoup = reponseCoup.propCoup;
+	if(reponseCoup.propCoup == GAGNANT){
+		pptCoup = PERDU;
+	}if(reponseCoup.propCoup == PERDU){
+		pptCoup =  GAGNANT;
+	}else{
+		pptCoup = reponseCoup.propCoup;
+	}
 
 	return 1;
 }

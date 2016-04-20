@@ -37,10 +37,10 @@ int receptionPartie(int sock,char *nomAdversaire, TypSymbol* symbol){
 
 }
 
-void envoitCoup(int sock, TypSymbol symbol, int portJava) {
+void envoitCoup(int sock, TypSymbol symbol, int socketJava) {
 
 	int tabCoup[2];
-	demandeCoupProlog(tabCoup, portJava);
+	demandeCoupProlog(tabCoup, socketJava);
 
 	TypCase pos = encoderCoup(tabCoup[0], tabCoup[1]);
 
@@ -105,34 +105,29 @@ int finPartie() {
 }
 
 
-void demandeCoupProlog(int *tabCoup, int portJava) {
-
-	int sock = socketClient("localhost", portJava);
-	if (sock < 0) { 
-	    printf("client : erreur socketClient\n");
-	    exit(2);
-	}
+void demandeCoupProlog(int *tabCoup, int sock) {
 
 	int demandeCoupProlog = 10;
+	printf("Envoit demande %d\n", demandeCoupProlog);
 	send(sock, &demandeCoupProlog, sizeof(int), 0);
 
 	char intBufferCoupReq[1024];
 	memset(intBufferCoupReq, '\0', sizeof(intBufferCoupReq));
 
 	int k = 0;
-	while ( 1 ) { 
-	    int nbytes = recv(sock, &intBufferCoupReq[k], sizeof(intBufferCoupReq), 0); 
-	    if ( nbytes == -1 ) { break; }
-	    k++;
-	}
+	while ( k < 8 ) { 
+   		int nbytes = recv(sock, &intBufferCoupReq[k], 1, 0); 
+   		//printf("%d\n", nbytes);
+    	if ( nbytes == -1 ) { printf("recv error\n"); break; }
+    	if ( nbytes ==  0 ) { printf("recv done\n"); break; }
+    	k++;
+	} 
 
 	int *myints = (int*) intBufferCoupReq;
 	int i = 0;
 	for ( i=0; i<(k/4); i++ ) {
 		tabCoup[i] = ntohl(myints[i]);
 	}
-
-	close(sock);
 
 }
 

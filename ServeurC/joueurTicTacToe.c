@@ -30,6 +30,11 @@ int main(int argc, char **argv){
 		printf("joueurTicTacToe : erreur socketClient\n");
 		exit(2);
 	}
+	int socketJava = socketClient(argv[1], portJava);
+	if (socketJava < 0) { 
+	    printf("client : erreur socket comm JAVA\n");
+	    exit(2);
+	}
 
 	sleep(2);
 	// DEMANDE DE PARTIE
@@ -42,8 +47,9 @@ int main(int argc, char **argv){
 		// Envoit d'un coup
 		printf("\n------------ ENVOIT COUP -----------------\n");
 		printf("COUP : ");
-		envoitCoup(sock, symb, portJava);
+		envoitCoup(sock, symb, socketJava);
 	}
+
 	while(finPartie() != 1) {
 		sleep(7);
 		// Reception Coup Autre joueur
@@ -53,10 +59,11 @@ int main(int argc, char **argv){
 
 		printf("\n------------ ENVOIT COUP -----------------\n");
 		printf("COUP : ");
-		envoitCoup(sock, symb, portJava);
+		envoitCoup(sock, symb, socketJava);
 	}
 	
 
 	shutdown(sock, 2);
 	close(sock);
+	close(socketJava);
 }

@@ -10,7 +10,13 @@
 #include "fonctionServeur.h"
 #include "fonctionsTCP.h"
 #include "protocoleTicTacToe.h"
+#include "validation.h"
 
+bool partie = true;
+
+bool finPartie(){
+    return partie;
+}
 
 int connexionJoueur(int* sockTrans, int sockConx){
 	*sockTrans = accept(sockConx,NULL,NULL);
@@ -118,7 +124,7 @@ int demandePartie(int sockTransJ1, int sockTransJ2,TypSymbol* symbj1, TypSymbol*
 
 
 
-int receptionCoup(int sockTrans1, int sockTrans2){
+int receptionCoup(int sockTrans1, int sockTrans2,int numJ){
 
     TypCoupReq coup;
 
@@ -134,11 +140,11 @@ int receptionCoup(int sockTrans1, int sockTrans2){
         printf("ARBITRE : Erreur temps de 6 secondes dépasser\n");
         return 0;
     }
-    TraitementCoup(coup,sockTrans1,sockTrans2);
+    TraitementCoup(coup,sockTrans1,sockTrans2,numJ);
     return 1;
 }
 
-int TraitementCoup(TypCoupReq coup, int sockTrans1, int sockTrans2){
+int TraitementCoup(TypCoupReq coup, int sockTrans1, int sockTrans2,int numJ){
 
     if(coup.idRequest == COUP){
         printf("ARBITRE : Reçu Coup\n");
@@ -146,10 +152,26 @@ int TraitementCoup(TypCoupReq coup, int sockTrans1, int sockTrans2){
         printf("ARBITRE : Transmission Coup\n");
         send(sockTrans2,&coup,sizeof(TypCoupReq),0);
 
+
         TypCoupRep rep;
         rep.propCoup = CONT;
         rep.validCoup = VALID;
         rep.err = ERR_OK;
+
+        bool valid;
+        valid = validationCoup(numJ, coup, &rep.propCoup);
+
+
+
+        if(valid == true ){
+            rep.validCoup = VALID;
+        }else{
+            rep.validCoup = TRICHE;
+        }
+
+        if(rep.propCoup == GAGNANT || rep.propCoup == PERDU || rep.propCoup == NULLE){
+            partie = false;
+        }
 
         printf("ARBITRE : Envoie Validation \n");
         send(sockTrans1,&rep,sizeof(TypCoupRep),0);

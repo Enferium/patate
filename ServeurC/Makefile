@@ -16,9 +16,8 @@ fonctionsTCP.o: fonctionsTCP.c fonctionsTCP.h
 joueurTicTacToe: joueurTicTacToe.c fonctionJoueur.h fonctionJoueur.c fonctionsTCP.o
 	gcc joueurTicTacToe.c -o joueurTicTacToe fonctionsTCP.o $(LD_FLAGS)
 
-serveurTicTacToe: serveurTicTacToe.c fonctionServeur.h fonctionServeur.c fonctionsTCP.o
-	gcc serveurTicTacToe.c -o serveurTicTacToe  fonctionsTCP.o  $(LD_FLAGS)
+serveurTicTacToe: serveurTicTacToe.c fonctionServeur.h fonctionServeur.c fonctionsTCP.o tictactoe.o
+	gcc serveurTicTacToe.c -o serveurTicTacToe  fonctionsTCP.o tictactoe.o $(LD_FLAGS)
 
 clean:
-	rm *~ ; rm -i \#* ; rm *.o; \
-        rm serveurTicTacToe ; rm joueurTicTacToe
+	rm *~ ; rm serveurTicTacToe ; rm joueurTicTacToe ; rm fonctionsTCP.o

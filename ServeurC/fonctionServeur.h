@@ -10,10 +10,11 @@
 #include "protocoleTicTacToe.h"
 #include "stdbool.h"
 
+bool finPartie();
 int connexionJoueur(int* sockTrans, int sockConx);
 int demandePartie(int sockTransJ1, int sockTransJ2,TypSymbol* symbj1, TypSymbol* symbj2,char* nomJ1, char* nomJ2);
-int receptionCoup(int sockTrans1, int sockTrans2);
-int TraitementCoup(TypCoupReq coup, int sockTrans1, int sockTrans2);
+int receptionCoup(int sockTrans1, int sockTrans2,int numJ);
+int TraitementCoup(TypCoupReq coup, int sockTrans1, int sockTrans2,int numJ);
 int envoyerTempsDepasser(int sockTrans1, int sockTrans2);
 void decoderCoup(TypCoupReq coup);
 

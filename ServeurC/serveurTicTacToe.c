@@ -20,6 +20,7 @@ int main(int argc, char** argv) {
    char nom[MAX_CH];
    int socket;
    TypSymbol symbol;
+   int numJ;
    }TypJoueur;
 
    TypJoueur joueurActif;
@@ -50,24 +51,32 @@ if(symbJ1 == CROIX){
 	joueurActif.socket = sockTransJ1;
   strcpy(joueurActif.nom,nomJ1);
   joueurActif.symbol = symbJ1;
+  joueurActif.numJ = 1;
 	joueurInactif.socket = sockTransJ2;
   strcpy(joueurActif.nom,nomJ2);
   joueurInactif.symbol = symbJ2;
+  joueurInactif.numJ=2;
 }else{
 	joueurActif.socket = sockTransJ2;
   strcpy(joueurActif.nom,nomJ2);
   joueurActif.symbol = symbJ2;
+  joueurActif.numJ = 2;
+
   joueurInactif.socket = sockTransJ1;
   strcpy(joueurActif.nom,nomJ1);
   joueurInactif.symbol = symbJ1;
+  joueurInactif.numJ=1;
+
 }
 int i=0;
-while(i<10 && tmpDepasser == false){
+while(finPartie() && tmpDepasser == false){
 	printf("Coup n°:  %d\n",i );
-	if(receptionCoup(joueurActif.socket,joueurInactif.socket) == 0){
+	if(receptionCoup(joueurActif.socket,joueurInactif.socket,joueurActif.numJ) == 0){
     tmpDepasser = true;
     envoyerTempsDepasser(joueurActif.socket,joueurInactif.socket);
   }
+
+
 
 	joueurTmp = joueurInactif;
 	joueurInactif = joueurActif;

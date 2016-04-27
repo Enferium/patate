@@ -124,7 +124,7 @@ int demandePartie(int sockTransJ1, int sockTransJ2,TypSymbol* symbj1, TypSymbol*
 
 
 
-int receptionCoup(int sockTrans1, int sockTrans2,int numJ){
+int receptionCoup(int sockTrans1, int sockTrans2,int numJ,TypCoupRep* coupRep){
 
     TypCoupReq coup;
 
@@ -140,11 +140,11 @@ int receptionCoup(int sockTrans1, int sockTrans2,int numJ){
         printf("ARBITRE : Erreur temps de 6 secondes dépasser\n");
         return 0;
     }
-    TraitementCoup(coup,sockTrans1,sockTrans2,numJ);
+    TraitementCoup(coup,sockTrans1,sockTrans2,numJ,coupRep);
     return 1;
 }
 
-int TraitementCoup(TypCoupReq coup, int sockTrans1, int sockTrans2,int numJ){
+int TraitementCoup(TypCoupReq coup, int sockTrans1, int sockTrans2,int numJ,TypCoupRep* coupRep){
 
     if(coup.idRequest == COUP){
         printf("ARBITRE : Reçu Coup\n");
@@ -154,8 +154,6 @@ int TraitementCoup(TypCoupReq coup, int sockTrans1, int sockTrans2,int numJ){
 
 
         TypCoupRep rep;
-        rep.propCoup = CONT;
-        rep.validCoup = VALID;
         rep.err = ERR_OK;
 
         bool valid;
@@ -173,9 +171,10 @@ int TraitementCoup(TypCoupReq coup, int sockTrans1, int sockTrans2,int numJ){
             partie = false;
         }
 
-        printf("ARBITRE : Envoie Validation \n");
+        *coupRep=rep;
+        
+        printf("ARBITRE : Envoie Validation aux joueurs\n");
         send(sockTrans1,&rep,sizeof(TypCoupRep),0);
-        printf("ARBITRE : Envoie Validation \n");
         send(sockTrans2,&rep,sizeof(TypCoupRep),0);
         return 1;
     }else{

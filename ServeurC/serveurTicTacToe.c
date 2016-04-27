@@ -15,17 +15,19 @@ int main(int argc, char** argv) {
   char nomJ1[MAX_CH];
   char nomJ2[MAX_CH];
 
- typedef struct
-   {
+  TypCoupRep coupRep;
+
+  typedef struct
+  {
    char nom[MAX_CH];
    int socket;
    TypSymbol symbol;
    int numJ;
-   }TypJoueur;
+ }TypJoueur;
 
-   TypJoueur joueurActif;
-   TypJoueur joueurInactif;
-   TypJoueur joueurTmp;
+ TypJoueur joueurActif;
+ TypJoueur joueurInactif;
+ TypJoueur joueurTmp;
 
 /*
 * verification des arguments
@@ -52,8 +54,8 @@ if(symbJ1 == CROIX){
   strcpy(joueurActif.nom,nomJ1);
   joueurActif.symbol = symbJ1;
   joueurActif.numJ = 1;
-	joueurInactif.socket = sockTransJ2;
-  strcpy(joueurActif.nom,nomJ2);
+  joueurInactif.socket = sockTransJ2;
+  strcpy(joueurInactif.nom,nomJ2);
   joueurInactif.symbol = symbJ2;
   joueurInactif.numJ=2;
 }else{
@@ -63,7 +65,7 @@ if(symbJ1 == CROIX){
   joueurActif.numJ = 2;
 
   joueurInactif.socket = sockTransJ1;
-  strcpy(joueurActif.nom,nomJ1);
+  strcpy(joueurInactif.nom,nomJ1);
   joueurInactif.symbol = symbJ1;
   joueurInactif.numJ=1;
 
@@ -71,22 +73,36 @@ if(symbJ1 == CROIX){
 int i=0;
 while(finPartie() && tmpDepasser == false){
 	printf("Coup n°:  %d\n",i );
-	if(receptionCoup(joueurActif.socket,joueurInactif.socket,joueurActif.numJ) == 0){
+	if(receptionCoup(joueurActif.socket,joueurInactif.socket,joueurActif.numJ,&coupRep) == 0){
     tmpDepasser = true;
     envoyerTempsDepasser(joueurActif.socket,joueurInactif.socket);
   }
 
 
 
-	joueurTmp = joueurInactif;
-	joueurInactif = joueurActif;
-	joueurActif = joueurTmp;
+  joueurTmp = joueurInactif;
+  joueurInactif = joueurActif;
+  joueurActif = joueurTmp;
 
-	i++;
+  i++;
 }
 
-printf("JOUEUR GAGNANT %s\n",joueurInactif.nom);
-printf("JOUEUR PERDANT %s\n",joueurActif.nom );
+printf("%d\n", coupRep.propCoup);
+
+if(coupRep.propCoup == GAGNANT){
+  printf("JOUEUR GAGNANT %s\n",joueurInactif.nom);
+  printf("JOUEUR PERDANT %s\n",joueurActif.nom );
+}else if(coupRep.propCoup == PERDU){
+
+  printf("JOUEUR GAGNANT %s\n",joueurActif.nom);
+  printf("JOUEUR PERDANT %s\n",joueurInactif.nom );
+}else if(coupRep.propCoup == NULLE){
+  printf("PARTIE NULLE\n");
+}else{
+ printf("JOUEUR GAGNANT %s\n",joueurInactif.nom);
+ printf("JOUEUR PERDANT %s\n",joueurActif.nom );
+}
+
 
 /* 
 * arret de la connexion et fermeture

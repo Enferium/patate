@@ -55,9 +55,9 @@ TypCase inputCoup(){
 	int p;
 	printf("PLATEAU : 1, 2, 3, 4, 5, 6, 7, 8, 9\n");
 	scanf("%d", &p);
-	printf("Case du sous plateau %c : 1,2,3,4,5,6,7,8,9\n",sp );
+	printf("Case du sous plateau %c : 1,2,3,4,5,6,7,8,9\n",p );
 	scanf("%d",&sp);
-
+	
 	TypCase tmp = encoderCoup(p,sp);
 
 	TypCase cas;
@@ -66,6 +66,13 @@ TypCase inputCoup(){
 
 	return cas;
 
+}
+
+int inputNbSousPlateauGagner(){
+	int nbC;
+	printf("Nombre de sous plateau gagner\n");
+	scanf("%d",&nbC);
+	return nbC;
 }
 
 
@@ -84,7 +91,7 @@ void envoitCoup(int sock, TypSymbol symbol, int socketJava) {
 	coup.idRequest = COUP;
 	coup.symbolJ = symbol;
 	coup.pos = pos;
-	coup.nbSousPlatG = 0;
+	coup.nbSousPlatG = inputNbSousPlateauGagner();
 
 	// On affiche le coup que l'on envoit à l'adversaire
 	decoderCoup(coup);

@@ -14,11 +14,10 @@
 
 void demandePartie(int sock, char* username);
 int receptionPartie(int sock,char *nomAdversaire, TypSymbol* symbol);
-void envoitCoup(int sock, TypSymbol symbol, int socketJava);
-int receptionCoup(int sock);
+void envoitCoup(int sock, TypSymbol symbol, int socketJava,TypCoupReq coupAdversaire);
+TypCoupReq receptionCoup(int sock);
 int finPartie();
 void decoderCoup(TypCoupReq coup);
-void demandeCoupProlog(int *tabCoup, int socketJava);
+void demandeCoupProlog(int *tabCoup, int socketJava,TypCoupReq coupAdversaire, TypSymbol symb);
 TypCase encoderCoup(int numPlat, int numSousPlat);
-
 #endif

@@ -24,35 +24,30 @@ class SocketLocale extends Thread {
 	public void run() {
 
 		try {
-			DataInputStream inToClient = new DataInputStream(connectionSocket.getInputStream());
+			System.out.println("blabla");
 			DataOutputStream outToClient = new DataOutputStream(connectionSocket.getOutputStream());
-			
-			BufferedReader bis = new BufferedReader(new 
-			InputStreamReader(connectionSocket.getInputStream()));
+			DataInputStream inToClient = new DataInputStream(connectionSocket.getInputStream());
+
 			String inputLine;
 			
 			while (true) {
 				if (isConnected) {
-					String results = "";
-					String joueur = "";
-					String sousPlateau = "";
-					String casePlateau = "";
+					int joueur = inToClient.readInt();
+					int sousPlateau = inToClient.readInt();
+					int casePlateau = inToClient.readInt();
+					System.out.println("blabla2");
+
+					System.out.println("a "+joueur);
+					System.out.println("b "+ sousPlateau);
+					System.out.println("c "+ casePlateau);
+
+
 					
-					while ((inputLine = bis.readLine()) != null) {
-					      results += inputLine;    
-					}
-					
-					String[] recvSplit = results.split(",");
-					joueur = recvSplit[0];
-					sousPlateau = recvSplit[1];
-					casePlateau = recvSplit[2];
-					
-					
-					if (joueur == "1") {
+					if (joueur == 1) {
 						String symboleJoueur = "x";
 						System.out.println("Demande de coup : " + getName());
 						
-						int coup = jSictus.demandeCoupProlog(symboleJoueur,casePlateau);
+						//int coup = jSictus.demandeCoupProlog(symboleJoueur,casePlateau);
 						
 						// Premier int = NUM PLATEAU
 						outToClient.writeInt(2);
@@ -61,7 +56,7 @@ class SocketLocale extends Thread {
 						// Coup envoyé E CINQ
 						outToClient.flush();
 					
-					} else if (joueur == "0") {
+					} else if (joueur == 0) {
 						String symboleJoueur = "o";
 						System.out.println("Demande de coup : " + getName());
 						

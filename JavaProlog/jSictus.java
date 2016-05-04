@@ -12,7 +12,7 @@ public class jSictus {
     }
     */
     
-    public static int demandeCoupProlog(String symbole, String casePlateau) {
+    public static int demandeCoupProlog(String symbole, int casePlateau) {
     	
     	String predicat = construitPredicat(symbole,casePlateau);
     	
@@ -64,8 +64,8 @@ public class jSictus {
 		return sol;
     }
     
-    public static String construitPredicat(String symbole, String casePlateau) {
+    public static String construitPredicat(String symbole, int casePlateau) {
 		
-    	return casePlateau;
+    	return symbole;
     }
 }

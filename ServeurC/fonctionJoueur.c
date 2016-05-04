@@ -77,14 +77,14 @@ int inputNbSousPlateauGagner(){
 
 
 
-void envoitCoup(int sock, TypSymbol symbol, int socketJava) {
+void envoitCoup(int sock, TypSymbol symbol, int socketJava, TypCoupReq coupAdversaire) {
 
 	int tabCoup[2];
-	/*demandeCoupProlog(tabCoup, socketJava);
+	demandeCoupProlog(tabCoup, socketJava,coupAdversaire,symbol);
 
-	TypCase pos = encoderCoup(tabCoup[0], tabCoup[1]);*/
+	TypCase pos = encoderCoup(tabCoup[0], tabCoup[1]);
 
-	TypCase pos = inputCoup();
+	//TypCase pos = inputCoup();
 
 	int err;
 	TypCoupReq coup;
@@ -115,7 +115,7 @@ void envoitCoup(int sock, TypSymbol symbol, int socketJava) {
 	pptCoup = reponseCoup.propCoup;
 }
 
-int receptionCoup(int sock) {
+TypCoupReq receptionCoup(int sock) {
 	TypCoupRep reponseCoup;
 	TypCoupReq coupAdversaire;
 	recv(sock, &coupAdversaire, sizeof(coupAdversaire), 0);
@@ -139,7 +139,7 @@ int receptionCoup(int sock) {
 		pptCoup = reponseCoup.propCoup;
 	}
 
-	return 1;
+	return coupAdversaire;
 }
 
 int finPartie() {
@@ -152,18 +152,50 @@ int finPartie() {
 }
 
 
-void demandeCoupProlog(int *tabCoup, int sock) {
+void demandeCoupProlog(int *tabCoup, int socks, TypCoupReq coupAdversaire, TypSymbol symb) {
+	
+	int symbol = 0;
+	if(symb == CROIX){
+		symbol = 1;
+	}else if(symb == ROND){
+		symbol = 2;
+	}
 
-	int demandeCoupProlog = 10;
-	printf("Envoit demande %d\n", demandeCoupProlog);
-	send(sock, &demandeCoupProlog, sizeof(int), 0);
+	printf("LE SYMBOL %d\n", symb);
+
+	printf("Envoit symbol et coup Adversaire%d\n", symbol);
+
+
+	TypPlat  numPlat = coupAdversaire.pos.numPlat;
+	TypSousPlat numSousPlat = coupAdversaire.pos.numSousPlat;
+
+	char envoi[6];
+	envoi[0] = symbol;
+	envoi[1] = ',';
+	envoi[2] = numPlat;
+	envoi[3] = ',';
+	envoi[4] = numSousPlat; 
+	envoi[5] = '\0';
+
+	int a = 1;
+	int b = 2;
+	int c = 3;
+
+	char* envoiTest = "1,2,3";
+	a = htonl(a);
+	b = htonl(b);
+	c = htonl(c);
+	send(socks, &a, sizeof(int), 0);
+	send(socks, &b, sizeof(int), 0);
+	send(socks, &c, sizeof(int), 0);
+
 
 	char intBufferCoupReq[1024];
 	memset(intBufferCoupReq, '\0', sizeof(intBufferCoupReq));
 
 	int k = 0;
 	while ( k < 8 ) { 
-   		int nbytes = recv(sock, &intBufferCoupReq[k], 1, 0); 
+   		int nbytes = recv(socks, &intBufferCoupReq[k], 1, 0); 
    		//printf("%d\n", nbytes);
     	if ( nbytes == -1 ) { printf("recv error\n"); break; }
     	if ( nbytes ==  0 ) { printf("recv done\n"); break; }

@@ -21,6 +21,7 @@ int main(int argc, char **argv){
 	
 	char nomAdv[MAX_CH];
 	TypSymbol symb;
+	TypCoupReq coupAdversaire;
 
 	port = atoi(argv[2]);
 	int portJava = atoi(argv[4]);
@@ -47,19 +48,19 @@ int main(int argc, char **argv){
 		// Envoit d'un coup
 		printf("\n------------ ENVOIT COUP -----------------\n");
 		printf("COUP : ");
-		envoitCoup(sock, symb, socketJava);
+		envoitCoup(sock, symb, socketJava,coupAdversaire);
 	}
 
 	while(finPartie() != 1) {
 		// Reception Coup Autre joueur
 		printf("\n------------ RECEPTION COUP OPPONENT -------------------\n");
 		printf("COUP : ");
-		receptionCoup(sock);
+		coupAdversaire = receptionCoup(sock);
 
 		if(finPartie() !=1){
 			printf("\n------------ ENVOIT COUP -----------------\n");
 			printf("COUP : ");
-			envoitCoup(sock, symb, socketJava);
+			envoitCoup(sock, symb, socketJava,coupAdversaire);
 		}
 	}
 	

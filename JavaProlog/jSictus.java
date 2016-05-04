@@ -12,9 +12,9 @@ public class jSictus {
     }
     */
     
-    public static int demandeCoupProlog(String symbole, int casePlateau) {
+    public static int demandeCoupProlog(String symbole,Morpion morpion) {
     	
-    	String predicat = construitPredicat(symbole,casePlateau);
+    	String predicat = construitPredicat(symbole, morpion);
     	
     	String saisie = predicat;
     	SICStus sp = null;
@@ -64,8 +64,26 @@ public class jSictus {
 		return sol;
     }
     
-    public static String construitPredicat(String symbole, int casePlateau) {
+    public static String construitPredicat(String symbole,Morpion morpion) {
+		// minimax(5,x,[1,0,-1,0,0,0,1,1]).
+    	String predicat = "minimax(5,";
+		predicat += symbole+",";
 		
-    	return symbole;
+		String plateau = "[";
+		for (int i = 0; i < morpion.grille.length; i++) {
+			for (int j = 0; j < morpion.grille.length; j++) {
+				if(morpion.grille[i][j].getPlayer() == null){
+					plateau += "0,";
+				}else{
+					if (morpion.grille[i][j].getPlayer().getName() == symbole) {
+						plateau += "1,";
+					} else {
+						plateau += "-1,";
+					}
+				}				
+			}
+		}
+		
+		return predicat+=plateau.substring(0,plateau.length()-1)+"]).";
     }
 }

@@ -1,11 +1,9 @@
 
 public class Player {
 	String name;
-	boolean computer;
 	
 	public Player(){
-		String name = "x";
-		computer = true;
+		this.name = "";
 	}
 
 	public String getName() {

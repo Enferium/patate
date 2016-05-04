@@ -1,4 +1,4 @@
-// importation des classes utiles à Jasper
+// importation des classes utiles a Jasper
 import se.sics.jasper.*;
 // pour utiliser les HashMap 
 import java.util.*;
@@ -19,7 +19,7 @@ public class jSictus {
     	String saisie = predicat;
     	SICStus sp = null;
     	int sol = 0;
-    	// HashMap utilisé pour stocker les solutions
+    	// HashMap utilise pour stocker les solutions
 		HashMap<String, SPTerm> results = new HashMap<String, SPTerm>();
     	
     	try {
@@ -30,7 +30,7 @@ public class jSictus {
     		sp.load("alpha_beta.pl");
 
     	}
-    	// exception déclanchée par SICStus lors de la création de l'objet sp
+    	// exception declanchee par SICStus lors de la creation de l'objet sp
     	catch (SPException e) {
     		System.err.println("Exception SICStus Prolog : " + e);
     		e.printStackTrace();

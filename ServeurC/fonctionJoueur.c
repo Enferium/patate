@@ -79,7 +79,7 @@ int inputNbSousPlateauGagner(){
 
 void envoitCoup(int sock, TypSymbol symbol, int socketJava, TypCoupReq coupAdversaire) {
 
-	int tabCoup[2];
+	int tabCoup[3];
 	demandeCoupProlog(tabCoup, socketJava,coupAdversaire,symbol);
 
 	TypCase pos = encoderCoup(tabCoup[0], tabCoup[1]);
@@ -91,7 +91,7 @@ void envoitCoup(int sock, TypSymbol symbol, int socketJava, TypCoupReq coupAdver
 	coup.idRequest = COUP;
 	coup.symbolJ = symbol;
 	coup.pos = pos;
-	coup.nbSousPlatG = inputNbSousPlateauGagner();
+	coup.nbSousPlatG = tabCoup[2];
 
 	// On affiche le coup que l'on envoit à l'adversaire
 	decoderCoup(coup);
@@ -189,7 +189,7 @@ void demandeCoupProlog(int *tabCoup, int socks, TypCoupReq coupAdversaire, TypSy
 	memset(intBufferCoupReq, '\0', sizeof(intBufferCoupReq));
 
 	int k = 0;
-	while ( k < 8 ) {
+	while ( k < 12 ) {
    		int nbytes = recv(socks, &intBufferCoupReq[k], 1, 0); 
    		//printf("%d\n", nbytes);
     	if ( nbytes == -1 ) { printf("recv error\n"); break; }

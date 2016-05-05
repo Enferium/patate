@@ -11,7 +11,25 @@ public class jSictus {
     	System.out.println(coup);
     }
     */
+    public static SICStus sp = null;
 
+    public jSictus(){
+
+        try {
+            // Creation d'un object SICStus
+            sp = new SICStus();
+
+            // Chargement d'un fichier prolog .pl
+            sp.load("alpha_beta.pl");
+            System.out.println("LOAD EFFECT UYAYAYAYAYAYA");
+        }
+        // exception declanchee par SICStus lors de la creation de l'objet sp
+        catch (SPException e) {
+            System.err.println("Exception SICStus Prolog : " + e);
+            e.printStackTrace();
+            System.exit(-2);
+        }
+    }
 
     
     public static int demandeCoupProlog(String symbole,Morpion morpion) {
@@ -20,25 +38,11 @@ public class jSictus {
         System.out.println(predicat);
     	
     	String saisie = predicat;
-    	SICStus sp = null;
     	int sol = 0;
     	// HashMap utilise pour stocker les solutions
 		HashMap<String, SPTerm> results = new HashMap<String, SPTerm>();
     	
-    	try {
-    		// Creation d'un object SICStus
-    		sp = new SICStus();
-
-    		// Chargement d'un fichier prolog .pl
-    		sp.load("alpha_beta.pl");
-            System.out.println("LOAD EFFECT UYAYAYAYAYAYA");
-    	}
-    	// exception declanchee par SICStus lors de la creation de l'objet sp
-    	catch (SPException e) {
-    		System.err.println("Exception SICStus Prolog : " + e);
-    		e.printStackTrace();
-    		System.exit(-2);
-    	}
+    	
 
     	// boucle pour saisir les informations 
     	if (! saisie.equals("halt.")) {

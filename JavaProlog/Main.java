@@ -72,13 +72,15 @@ public class Main {
 										}
 									}
 								}
-								indiceDuSousPlateauDansLequelOnVaJouer = (ligne+1)*(colonne+1);
+								indiceDuSousPlateauDansLequelOnVaJouer = getNumCase(ligne,colonne);
 							} else {
 								indiceDuSousPlateauDansLequelOnVaJouer = casePlateau;
 							}
 						} else {
-							sousPlateauDansLequelOnVaJouer = ultimate.getMorpion(1,1);
-							indiceDuSousPlateauDansLequelOnVaJouer = 5;
+							int r1 = 0+(int)(Math.random()*3);
+							int r2 = 0+(int)(Math.random()*3);
+							sousPlateauDansLequelOnVaJouer = ultimate.getMorpion(r1,r2);
+							indiceDuSousPlateauDansLequelOnVaJouer = (r1+1) * (r2+1);
 							isFirstPlay = false;
 						}
 
@@ -123,19 +125,21 @@ public class Main {
 						int ligne = 0;
 						int colonne = 0;
 						if (m.verif) {
-							// On cherche un autre sousPlateau qui n'est pas plein
-							for (int i = 0; i < 3; i++) {
-								for (int j = 0; j < 3; j++) {
-									m = ultimate.getMorpion(i, j);
-									m.verif();
-									if (!m.verif) {
-										sousPlateauDansLequelOnVaJouer = m;
-										ligne = i;
-										colonne = j;
+								// On cherche un autre sousPlateau qui n'est pas plein
+								for (int i = 0; i < 3; i++) {
+									for (int j = 0; j < 3; j++) {
+										m = ultimate.getMorpion(i, j);
+										m.verif();
+										if (!m.verif) {
+											sousPlateauDansLequelOnVaJouer = m;
+											ligne = i;
+											colonne = j;
+										}
 									}
 								}
-							}
-							indiceDuSousPlateauDansLequelOnVaJouer = (ligne+1)*(colonne+1);
+
+
+								indiceDuSousPlateauDansLequelOnVaJouer = getNumCase(ligne,colonne);
 						} else {
 							indiceDuSousPlateauDansLequelOnVaJouer = casePlateau;
 						}
@@ -190,6 +194,29 @@ public class Main {
 		if (SP == 3 || SP == 6 || SP == 9)
 			val = 2;
 		return val;
+	}
+
+	public static int getNumCase(int ligne, int colonne){
+		if(ligne == 0 && colonne == 0){
+			return 1;
+		}else if(ligne == 1 && colonne == 0){
+			return 4;
+		}else if(ligne == 2 && colonne == 0){
+			return 7;
+		}else if(ligne == 0 && colonne == 1){
+			return 2;
+		}else if(ligne == 1 && colonne == 1){
+			return 5;
+		}else if(ligne == 2 && colonne == 1){
+			return 8;
+		}else if(ligne == 0 && colonne == 2){
+			return 3;
+		}else if(ligne == 1 && colonne == 2){
+			return 6;
+		}else if(ligne == 2 && colonne == 2){
+			return 9;
+		}
+		return 1;
 	}
 	
 }

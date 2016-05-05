@@ -18,15 +18,15 @@ prochainJoueur(x,o).
 prochainJoueur(o,x).
 
 % On liste tous les déplacements possibles sur le plateau
-deplace([0,B,C,D,E,F,G,H,I], 1, [1,B,C,D,E,F,G,H,I]).
-deplace([A,0,C,D,E,F,G,H,I], 2, [A,1,C,D,E,F,G,H,I]).
-deplace([A,B,0,D,E,F,G,H,I], 3, [A,B,1,D,E,F,G,H,I]).
-deplace([A,B,C,0,E,F,G,H,I], 4, [A,B,C,1,E,F,G,H,I]).
 deplace([A,B,C,D,0,F,G,H,I], 5, [A,B,C,D,1,F,G,H,I]).
-deplace([A,B,C,D,E,0,G,H,I], 6, [A,B,C,D,E,1,G,H,I]).
+deplace([0,B,C,D,E,F,G,H,I], 1, [1,B,C,D,E,F,G,H,I]).
+deplace([A,B,0,D,E,F,G,H,I], 3, [A,B,1,D,E,F,G,H,I]).
 deplace([A,B,C,D,E,F,0,H,I], 7, [A,B,C,D,E,F,1,H,I]).
-deplace([A,B,C,D,E,F,G,0,I], 8, [A,B,C,D,E,F,G,1,I]).
 deplace([A,B,C,D,E,F,G,H,0], 9, [A,B,C,D,E,F,G,H,1]).
+deplace([A,0,C,D,E,F,G,H,I], 2, [A,1,C,D,E,F,G,H,I]).
+deplace([A,B,C,0,E,F,G,H,I], 4, [A,B,C,1,E,F,G,H,I]).
+deplace([A,B,C,D,E,0,G,H,I], 6, [A,B,C,D,E,1,G,H,I]).
+deplace([A,B,C,D,E,F,G,0,I], 8, [A,B,C,D,E,F,G,1,I]).
 
 % On liste tous les déplacements qui peuvent amener à gagner le plateau
 deplacement_gagnant([0,1,1,_,_,_,_,_,_], 1):-!.
@@ -65,13 +65,13 @@ joue(_, Plateau, Joueur,_):-
         finPartie(Resultat, Joueur).
 
 joue(Profondeur, Plateau, Joueur, Deplacement):-
-        write('Joueur: '),
-        write(Joueur),nl,        
+        %write('Joueur: '),
+        %write(Joueur),nl,        
         chercheCoup(Profondeur, Plateau, Joueur, Deplacement),
-        deplace(Plateau, Deplacement, NewPlateau),
-        remplace(NewPlateau, Joueur, [], NewPlateauAffiche),
-        inverse(NewPlateauAffiche, NewPlateauAfficheInverse),
-        write(NewPlateauAfficheInverse),nl,nl,
+        deplace(Plateau, Deplacement, _),
+        %remplace(NewPlateau, Joueur, [], NewPlateauAffiche),
+        %inverse(NewPlateauAffiche, NewPlateauAfficheInverse),
+        %write(NewPlateauAfficheInverse),nl,nl,
         !.
         %swap_plateau(NewPlateau, NextPlateau),
         %prochainJoueur(Joueur, J2),
@@ -79,14 +79,14 @@ joue(Profondeur, Plateau, Joueur, Deplacement):-
 
 % On cherche un coup valide avec AlphaBeta
 chercheCoup(Profondeur, Plateau, x, Deplacement):-
-        alphabeta(Profondeur, Plateau, -32767, 32767, Deplacement, Valeur),
-        write('Deplacement|Valeur: '),
-        write([Deplacement,Valeur]), nl.
+        alphabeta(Profondeur, Plateau, -32767, 32767, Deplacement, _).
+        %write('Deplacement|Valeur: '),
+        %write([Deplacement,Valeur]), nl.
 
 chercheCoup(Profondeur, Plateau, o, Deplacement):-
-        alphabeta(Profondeur, Plateau, -32767, 32767, Deplacement, Valeur),
-        write('Deplacement|Valeur: '),
-        write([Deplacement,Valeur]), nl.
+        alphabeta(Profondeur, Plateau, -32767, 32767, Deplacement, _).
+        %write('Deplacement|Valeur: '),
+        %write([Deplacement,Valeur]), nl.
 
 % Notre AlphaBeta
 alphabeta(_, Plateau, _, _, 0, -1000):-

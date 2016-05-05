@@ -169,19 +169,14 @@ void demandeCoupProlog(int *tabCoup, int socks, TypCoupReq coupAdversaire, TypSy
 	TypPlat  numPlat = coupAdversaire.pos.numPlat;
 	TypSousPlat numSousPlat = coupAdversaire.pos.numSousPlat;
 
-	char envoi[6];
-	envoi[0] = symbol;
-	envoi[1] = ',';
-	envoi[2] = numPlat;
-	envoi[3] = ',';
-	envoi[4] = numSousPlat; 
-	envoi[5] = '\0';
+	int a = symbol;
+	int b = (int)numPlat+1;
+	int c = (int)numSousPlat+1;
 
-	int a = 1;
-	int b = 2;
-	int c = 3;
+	printf("a : %d\n", a);
+	printf("b : %d\n", b);
+	printf("c : %d\n", c);
 
-	char* envoiTest = "1,2,3";
 	a = htonl(a);
 	b = htonl(b);
 	c = htonl(c);
@@ -194,7 +189,7 @@ void demandeCoupProlog(int *tabCoup, int socks, TypCoupReq coupAdversaire, TypSy
 	memset(intBufferCoupReq, '\0', sizeof(intBufferCoupReq));
 
 	int k = 0;
-	while ( k < 8 ) { 
+	while ( k < 8 ) {
    		int nbytes = recv(socks, &intBufferCoupReq[k], 1, 0); 
    		//printf("%d\n", nbytes);
     	if ( nbytes == -1 ) { printf("recv error\n"); break; }

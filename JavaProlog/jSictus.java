@@ -11,10 +11,13 @@ public class jSictus {
     	System.out.println(coup);
     }
     */
+
+
     
     public static int demandeCoupProlog(String symbole,Morpion morpion) {
     	
     	String predicat = construitPredicat(symbole, morpion);
+        System.out.println(predicat);
     	
     	String saisie = predicat;
     	SICStus sp = null;
@@ -28,7 +31,7 @@ public class jSictus {
 
     		// Chargement d'un fichier prolog .pl
     		sp.load("alpha_beta.pl");
-
+            System.out.println("LOAD EFFECT UYAYAYAYAYAYA");
     	}
     	// exception declanchee par SICStus lors de la creation de l'objet sp
     	catch (SPException e) {
@@ -61,6 +64,7 @@ public class jSictus {
     		}
 
     	}
+    
 		return sol;
     }
     
@@ -83,7 +87,11 @@ public class jSictus {
 				}				
 			}
 		}
-		
-		return predicat+=plateau.substring(0,plateau.length()-1)+"]).";
+		return predicat+=plateau.substring(0,plateau.length()-1)+"],Sol).";
+    }
+
+    @Override
+    protected void finalize() throws Throwable{
+        super.finalize();
     }
 }

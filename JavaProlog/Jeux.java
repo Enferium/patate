@@ -6,10 +6,7 @@ public class Jeux {
 		
 		Ultimate ulti = new Ultimate();
 		
-		SocketLocale sock1 = new SocketLocale(5555);
-		SocketLocale sock2 = new SocketLocale(6666);
-		sock1.start();
-		sock2.start();
+
 
 		Player player = new Player();
 		Player player2 = new Player();

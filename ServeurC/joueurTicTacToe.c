@@ -22,6 +22,10 @@ int main(int argc, char **argv){
 	char nomAdv[MAX_CH];
 	TypSymbol symb;
 	TypCoupReq coupAdversaire;
+	TypCase cas;
+	cas.numPlat = A;
+	cas.numSousPlat = UN;
+	coupAdversaire.pos = cas;
 
 	port = atoi(argv[2]);
 	int portJava = atoi(argv[4]);

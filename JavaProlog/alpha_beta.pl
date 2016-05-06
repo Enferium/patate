@@ -12,8 +12,10 @@
 % -1 = Symbole de l'adversaire courant dans le plateau
 % 0 = Case libre
 
+% On initialise un plateau vide (Sert uniquement dans un match IA vs IA)
 initialise([0,0,0,0,0,0,0,0,0]).
 
+% On inverse le joueur (Sert uniquement dans un match IA vs IA)
 prochainJoueur(x,o).
 prochainJoueur(o,x).
 
@@ -79,17 +81,17 @@ joue(Profondeur, Plateau, Joueur, Deplacement):-
 
 % On cherche un coup valide avec AlphaBeta
 chercheCoup(Profondeur, Plateau, x, Deplacement):-
-        alphabeta(Profondeur, Plateau, -32767, 32767, Deplacement, _).
+        alphabeta(Profondeur, Plateau, -20000, 20000, Deplacement, _).
         %write('Deplacement|Valeur: '),
         %write([Deplacement,Valeur]), nl.
 
 chercheCoup(Profondeur, Plateau, o, Deplacement):-
-        alphabeta(Profondeur, Plateau, -32767, 32767, Deplacement, _).
+        alphabeta(Profondeur, Plateau, -20000, 20000, Deplacement, _).
         %write('Deplacement|Valeur: '),
         %write([Deplacement,Valeur]), nl.
 
 % Notre AlphaBeta
-alphabeta(_, Plateau, _, _, 0, -1000):-
+alphabeta(_, Plateau, _, _, 0, -999):-
         plateauPerdant(Plateau).
 
 alphabeta(Profondeur, Plateau, Alpha, Beta, MeilleurCoup, Valeur):-
@@ -122,6 +124,7 @@ cherche_deplacement_gagnant(Position, Deplacements):-
         % Sinon, on prend n'importe quel coup valide
         findall(Deplacement, deplace(Position, Deplacement, _), Deplacements).
 
+% Recherche du meilleur deplacement en faisant jouer l'adversaire + elagage
 meilleurDeplacement([], _, _, Alpha, _, Move, Move, Alpha).
 meilleurDeplacement([Deplacement|Deplacements], Posn, Profondeur, Alpha, Beta, Deplacement0, Deplacement1, Valeur1):-
         deplace(Posn, Deplacement, NewPosn0), 
@@ -129,21 +132,23 @@ meilleurDeplacement([Deplacement|Deplacements], Posn, Profondeur, Alpha, Beta, D
         swap_plateau(NewPosn0, NewPosn),
         alphabeta(Profondeur, NewPosn, Alpha, Beta, _, ValeurMin),
         Valeur is -ValeurMin,
-        cutoff(Deplacement, Valeur, Profondeur, Alpha, Beta, Deplacements, Posn, Deplacement0, Deplacement1, Valeur1).
+        elagage(Deplacement, Valeur, Profondeur, Alpha, Beta, Deplacements, Posn, Deplacement0, Deplacement1, Valeur1).
 
-cutoff(_, Valeur, Pronfondeur, Alpha, Beta, Deplacements, Plateau, Deplacement0, Deplacement1, Valeur1):-
+% Permet de supprimes les branches non interessantes
+elagage(_, Valeur, Pronfondeur, Alpha, Beta, Deplacements, Plateau, Deplacement0, Deplacement1, Valeur1):-
         Valeur =< Alpha, 
         !,
         meilleurDeplacement(Deplacements, Plateau, Pronfondeur, Alpha, Beta, Deplacement0, Deplacement1, Valeur1).
 
-cutoff(Deplacement, Valeur, Profondeur, _, Beta, Deplacements, Plateau, _, Deplacement1, Valeur1):-
+elagage(Deplacement, Valeur, Profondeur, _, Beta, Deplacements, Plateau, _, Deplacement1, Valeur1):-
         Valeur < Beta, 
         !,
         meilleurDeplacement(Deplacements, Plateau, Profondeur, Valeur, Beta, Deplacement, Deplacement1, Valeur1).
 
-cutoff(Move, Value, _, _, _, _, _, _, Move, Value).
+elagage(Move, Value, _, _, _, _, _, _, Move, Value).
 
-difference(Plateau, -1000):-
+% Remonte le calcul de l'heuristique
+difference(Plateau, -999):-
         plateauPerdant(Plateau), 
         !.
 
@@ -153,7 +158,6 @@ difference(Plateau, Valeur):-
         Valeur is 2 * N1 - N2.
 
 % Lignes qui peuvent être gagnées
-
 lignes_gagnantes(Plateau, M, Acc, N):-
         lignes(Plateau, Lignes),
         lignes_gagnantes_1(Lignes, M, Acc, N).
@@ -173,9 +177,11 @@ lignes_gagnantes([A,B,C], M):-
 
 lignes([A,B,C,D,E,F,G,H,I],[[A,B,C],[D,E,F],[G,H,I],[A,D,G],[B,E,H],[C,F,I],[A,E,I],[C,E,G]]).
 
+% On vérifie si on n'est pas dans un etat final
 etatFinal(Plateau, perdu):-  plateauPerdant(Plateau), !.
 etatFinal(Plateau, egalite):- \+(deplace(Plateau, _, _)).
 
+% Affichage du résultats (Sert uniquement dans une partie IA VS IA)
 finPartie(perdu, x):- write('x perde'), nl, nl.
 finPartie(perdu, o):- write('o perde'), nl, nl.
 finPartie(egalite, _):- write('Egalite'), nl, nl.
@@ -199,6 +205,7 @@ swap_plateau([A0,B0,C0,D0,E0,F0,G0,H0,I0], [A,B,C,D,E,F,G,H,I]):-
 
 
 % Remplace les symboles du plateau avec ceux du joueur
+% Sert uniquement pour l'affichage dans une partie IA VS IA
 remplace([],_,Acc,Acc).
 remplace([0|Tail],Joueur,Acc,L):-
         remplace(Tail,Joueur,[0|Acc],L).
@@ -217,6 +224,4 @@ inverse([X|L],Acc,S):-
         inverse(L,[X|Acc],S).
 
 
-% ULTIMATE
-
-
+% ULTIMATE : Non réalisé

@@ -23,3 +23,7 @@ Pour compiler le java sur les ordis de la fac :
 export LD_LIBRARY_PATH=/applis/sicstus-4.3.2/lib/ 
 
 javac -classpath /applis/sicstus-4.3.2/lib/sicstus-4.3.2/bin/jasper.jar:/applis/sicstus-4.3.2/lib/sicstus-4.3.2/bin/prologbeans.jar *.java
+
+Pour executer le java sur les ordis de la fac :
+
+java -classpath /applis/sicstus-4.3.2/lib/sicstus-4.3.2/bin/jasper.jar:/applis/sicstus-4.3.2/lib/sicstus-4.3.2/bin/prologbeans.jar:. Main [numero de port]

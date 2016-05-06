@@ -3,6 +3,7 @@ import java.util.Arrays;
 public class Morpion {
 	public Case[][] grille;
 	boolean verif;
+	boolean verifPlein;
 	
 	public Morpion(){
 		grille = new Case[3][3];
@@ -12,6 +13,7 @@ public class Morpion {
 			}
 		}
 		verif=false;
+		verifPlein=false;
 	}
 	
 	public void jouerCoup(Player player,int x, int y){
@@ -61,6 +63,14 @@ public class Morpion {
 			verif = true;
 		}
 		
+	}
+	
+	public void verifPlein(){
+		if (!grille[0][0].estLibre() && !grille[0][1].estLibre() && !grille[0][2].estLibre() &&
+				!grille[1][0].estLibre() && !grille[1][1].estLibre() && !grille[1][2].estLibre() &&
+				!grille[2][0].estLibre() && !grille[2][1].estLibre() && !grille[2][2].estLibre()) {
+			verifPlein = true;
+		}
 	}
 
 	@Override

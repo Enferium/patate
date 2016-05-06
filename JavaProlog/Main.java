@@ -57,15 +57,17 @@ public class Main {
 							sousPlateauDansLequelOnVaJouer = ultimate.getMorpion(getLigne(casePlateau), getColonne(casePlateau));
 							
 							m = ultimate.getMorpion(getLigne(casePlateau), getColonne(casePlateau));
+							m.verifPlein();
 							m.verif();
 
-							if (m.verif) {
+							if (m.verifPlein || m.verif) {
 								// On cherche un autre sousPlateau qui n'est pas plein
 								for (int i = 0; i < 3; i++) {
 									for (int j = 0; j < 3; j++) {
 										m = ultimate.getMorpion(i, j);
 										m.verif();
-										if (!m.verif) {
+										m.verifPlein();
+										if (!m.verif || !m.verifPlein) {
 											sousPlateauDansLequelOnVaJouer = m;
 											ligne = i;
 											colonne = j;
@@ -122,15 +124,17 @@ public class Main {
 						
 						m = ultimate.getMorpion(getLigne(casePlateau), getColonne(casePlateau));
 						m.verif();
+						m.verifPlein();
 						int ligne = 0;
 						int colonne = 0;
-						if (m.verif) {
+						if (m.verif || m.verifPlein) {
 								// On cherche un autre sousPlateau qui n'est pas plein
 								for (int i = 0; i < 3; i++) {
 									for (int j = 0; j < 3; j++) {
 										m = ultimate.getMorpion(i, j);
 										m.verif();
-										if (!m.verif) {
+										m.verifPlein();
+										if (!m.verif && !m.verifPlein) {
 											sousPlateauDansLequelOnVaJouer = m;
 											ligne = i;
 											colonne = j;

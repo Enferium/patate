@@ -8,6 +8,7 @@ public class Main {
 
 	public static void main(String[] args) {
 
+		ServerSocket welcomeSocket = null;
 		Socket connectionSocket = null;
 		boolean isConnected = false;
 		Ultimate ultimate = new Ultimate();
@@ -16,7 +17,7 @@ public class Main {
 		jSictus jsp = new jSictus();
 
 		try {
-			ServerSocket welcomeSocket = new ServerSocket(Integer.parseInt(args[0]));
+			welcomeSocket = new ServerSocket(Integer.parseInt(args[0]));
 			connectionSocket = welcomeSocket.accept();
 			isConnected = true;
 		} catch (IOException e) {
@@ -31,141 +32,145 @@ public class Main {
 			boolean isFirstPlay = true;
 			while (true) {
 				if (isConnected) {
-					int joueur = inToClient.readInt();
-					int sousPlateau = inToClient.readInt();
-					int casePlateau = inToClient.readInt();
-					if (joueur == 1) {
-						nous.setName("x");
-						adv.setName("o");
-						
-						Morpion sousPlateauDansLequelOnVaJouer;
-						int indiceDuSousPlateauDansLequelOnVaJouer = 0;
+					try {
+						int joueur = inToClient.readInt();
+						int sousPlateau = inToClient.readInt();
+						int casePlateau = inToClient.readInt();
+						if (joueur == 1) {
+							nous.setName("x");
+							adv.setName("o");
+							
+							Morpion sousPlateauDansLequelOnVaJouer;
+							int indiceDuSousPlateauDansLequelOnVaJouer = 0;
 
-						int ligne = 0;
-						int colonne = 0;
-						String symboleJoueur = "x";
+							int ligne = 0;
+							int colonne = 0;
+							String symboleJoueur = "x";
 
-						Morpion m;
+							Morpion m;
 
-						// MAJ MORPION JAVA ADV
-						if(!isFirstPlay){
-							m = ultimate.getMorpion(getLigne(sousPlateau), getColonne(sousPlateau));
+							// MAJ MORPION JAVA ADV
+							if(!isFirstPlay){
+								m = ultimate.getMorpion(getLigne(sousPlateau), getColonne(sousPlateau));
+								m.jouerCoup(adv, getLigne(casePlateau), getColonne(casePlateau));
+								
+								// NOTRE COUP
+								// Par defaut on jouera dans le sous plateau qui correspond a la case plateau de l'adv
+								sousPlateauDansLequelOnVaJouer = ultimate.getMorpion(getLigne(casePlateau), getColonne(casePlateau));
+								
+								m = ultimate.getMorpion(getLigne(casePlateau), getColonne(casePlateau));
+								m.verifPlein();
+								m.verif();
+
+								if (m.verifPlein || m.verif) {
+									// On cherche un autre sousPlateau qui n'est pas plein
+									for (int i = 0; i < 3; i++) {
+										for (int j = 0; j < 3; j++) {
+											m = ultimate.getMorpion(i, j);
+											m.verif();
+											m.verifPlein();
+											if (!m.verif && !m.verifPlein) {
+												sousPlateauDansLequelOnVaJouer = m;
+												ligne = i;
+												colonne = j;
+											}
+										}
+									}
+									indiceDuSousPlateauDansLequelOnVaJouer = getNumCase(ligne,colonne);
+								} else {
+									indiceDuSousPlateauDansLequelOnVaJouer = casePlateau;
+								}
+							} else {
+								int r1 = 0+(int)(Math.random()*3);
+								int r2 = 0+(int)(Math.random()*3);
+								sousPlateauDansLequelOnVaJouer = ultimate.getMorpion(r1,r2);
+								indiceDuSousPlateauDansLequelOnVaJouer = (r1+1) * (r2+1);
+								isFirstPlay = false;
+							}						
+							
+							int coup = jsp.demandeCoupProlog(symboleJoueur,sousPlateauDansLequelOnVaJouer);
+							
+							m = ultimate.getMorpion(getLigne(indiceDuSousPlateauDansLequelOnVaJouer), getColonne(indiceDuSousPlateauDansLequelOnVaJouer));
+							m.jouerCoup(nous, getLigne(coup), getColonne(coup));
+
+							m.verif();
+							if(m.verif == true){
+								nous.setNb(nous.getNb() + 1);
+							}
+
+							// Premier int = NUM PLATEAU
+							outToClient.writeInt(indiceDuSousPlateauDansLequelOnVaJouer);
+							// NUM SOUS PLATEAU
+							outToClient.writeInt(coup);
+
+							outToClient.writeInt(nous.getNb());
+							// Coup envoyé E CINQ
+							outToClient.flush();
+
+						} else if (joueur == 2) {
+							nous.setName("o");
+							adv.setName("x");
+							
+							// MAJ MORPION JAVA ADV
+							Morpion m = ultimate.getMorpion(getLigne(sousPlateau), getColonne(sousPlateau));
 							m.jouerCoup(adv, getLigne(casePlateau), getColonne(casePlateau));
 							
 							// NOTRE COUP
 							// Par defaut on jouera dans le sous plateau qui correspond a la case plateau de l'adv
-							sousPlateauDansLequelOnVaJouer = ultimate.getMorpion(getLigne(casePlateau), getColonne(casePlateau));
+							Morpion sousPlateauDansLequelOnVaJouer = ultimate.getMorpion(getLigne(casePlateau), getColonne(casePlateau));
+							String symboleJoueur = "o";
+
+							int indiceDuSousPlateauDansLequelOnVaJouer = 0;
 							
 							m = ultimate.getMorpion(getLigne(casePlateau), getColonne(casePlateau));
-							m.verifPlein();
 							m.verif();
-
-							if (m.verifPlein || m.verif) {
-								// On cherche un autre sousPlateau qui n'est pas plein
-								for (int i = 0; i < 3; i++) {
-									for (int j = 0; j < 3; j++) {
-										m = ultimate.getMorpion(i, j);
-										m.verif();
-										m.verifPlein();
-										if (!m.verif && !m.verifPlein) {
-											sousPlateauDansLequelOnVaJouer = m;
-											ligne = i;
-											colonne = j;
+							m.verifPlein();
+							int ligne = 0;
+							int colonne = 0;
+							if (m.verif || m.verifPlein) {
+									// On cherche un autre sousPlateau qui n'est pas plein
+									for (int i = 0; i < 3; i++) {
+										for (int j = 0; j < 3; j++) {
+											m = ultimate.getMorpion(i, j);
+											m.verif();
+											m.verifPlein();
+											if (!m.verif && !m.verifPlein) {
+												sousPlateauDansLequelOnVaJouer = m;
+												ligne = i;
+												colonne = j;
+											}
 										}
 									}
-								}
-								indiceDuSousPlateauDansLequelOnVaJouer = getNumCase(ligne,colonne);
+									indiceDuSousPlateauDansLequelOnVaJouer = getNumCase(ligne,colonne);
 							} else {
 								indiceDuSousPlateauDansLequelOnVaJouer = casePlateau;
 							}
-						} else {
-							int r1 = 0+(int)(Math.random()*3);
-							int r2 = 0+(int)(Math.random()*3);
-							sousPlateauDansLequelOnVaJouer = ultimate.getMorpion(r1,r2);
-							indiceDuSousPlateauDansLequelOnVaJouer = (r1+1) * (r2+1);
-							isFirstPlay = false;
-						}						
-						
-						int coup = jsp.demandeCoupProlog(symboleJoueur,sousPlateauDansLequelOnVaJouer);
-						
-						m = ultimate.getMorpion(getLigne(indiceDuSousPlateauDansLequelOnVaJouer), getColonne(indiceDuSousPlateauDansLequelOnVaJouer));
-						m.jouerCoup(nous, getLigne(coup), getColonne(coup));
+							
+							System.out.println("INDICE : "+ indiceDuSousPlateauDansLequelOnVaJouer+"   LIGNE : "+ligne+"    COLONNE"+colonne);
+							
+							int coup = jsp.demandeCoupProlog(symboleJoueur,sousPlateauDansLequelOnVaJouer);
 
-						m.verif();
-						if(m.verif == true){
-							nous.setNb(nous.getNb() + 1);
+							m = ultimate.getMorpion(getLigne(indiceDuSousPlateauDansLequelOnVaJouer), getColonne(indiceDuSousPlateauDansLequelOnVaJouer));
+							m.jouerCoup(nous, getLigne(coup), getColonne(coup));
+
+
+							m.verif();
+							if(m.verif == true){
+								nous.setNb(nous.getNb()+1);
+							}
+							
+							// Premier int = NUM PLATEAU
+							outToClient.writeInt(indiceDuSousPlateauDansLequelOnVaJouer);
+							// NUM SOUS PLATEAU
+							outToClient.writeInt(coup);
+
+							outToClient.writeInt(nous.getNb());
+
+							// Coup envoyé E CINQ
+							outToClient.flush();
 						}
-
-						// Premier int = NUM PLATEAU
-						outToClient.writeInt(indiceDuSousPlateauDansLequelOnVaJouer);
-						// NUM SOUS PLATEAU
-						outToClient.writeInt(coup);
-
-						outToClient.writeInt(nous.getNb());
-						// Coup envoyé E CINQ
-						outToClient.flush();
-
-					} else if (joueur == 2) {
-						nous.setName("o");
-						adv.setName("x");
-						
-						// MAJ MORPION JAVA ADV
-						Morpion m = ultimate.getMorpion(getLigne(sousPlateau), getColonne(sousPlateau));
-						m.jouerCoup(adv, getLigne(casePlateau), getColonne(casePlateau));
-						
-						// NOTRE COUP
-						// Par defaut on jouera dans le sous plateau qui correspond a la case plateau de l'adv
-						Morpion sousPlateauDansLequelOnVaJouer = ultimate.getMorpion(getLigne(casePlateau), getColonne(casePlateau));
-						String symboleJoueur = "o";
-
-						int indiceDuSousPlateauDansLequelOnVaJouer = 0;
-						
-						m = ultimate.getMorpion(getLigne(casePlateau), getColonne(casePlateau));
-						m.verif();
-						m.verifPlein();
-						int ligne = 0;
-						int colonne = 0;
-						if (m.verif || m.verifPlein) {
-								// On cherche un autre sousPlateau qui n'est pas plein
-								for (int i = 0; i < 3; i++) {
-									for (int j = 0; j < 3; j++) {
-										m = ultimate.getMorpion(i, j);
-										m.verif();
-										m.verifPlein();
-										if (!m.verif && !m.verifPlein) {
-											sousPlateauDansLequelOnVaJouer = m;
-											ligne = i;
-											colonne = j;
-										}
-									}
-								}
-								indiceDuSousPlateauDansLequelOnVaJouer = getNumCase(ligne,colonne);
-						} else {
-							indiceDuSousPlateauDansLequelOnVaJouer = casePlateau;
-						}
-						
-						System.out.println("INDICE : "+ indiceDuSousPlateauDansLequelOnVaJouer+"   LIGNE : "+ligne+"    COLONNE"+colonne);
-						
-						int coup = jsp.demandeCoupProlog(symboleJoueur,sousPlateauDansLequelOnVaJouer);
-
-						m = ultimate.getMorpion(getLigne(indiceDuSousPlateauDansLequelOnVaJouer), getColonne(indiceDuSousPlateauDansLequelOnVaJouer));
-						m.jouerCoup(nous, getLigne(coup), getColonne(coup));
-
-
-						m.verif();
-						if(m.verif == true){
-							nous.setNb(nous.getNb()+1);
-						}
-						
-						// Premier int = NUM PLATEAU
-						outToClient.writeInt(indiceDuSousPlateauDansLequelOnVaJouer);
-						// NUM SOUS PLATEAU
-						outToClient.writeInt(coup);
-
-						outToClient.writeInt(nous.getNb());
-
-						// Coup envoyé E CINQ
-						outToClient.flush();
+					} catch (EOFException e) {
+						welcomeSocket.close();
 					}
 				}
 			}	

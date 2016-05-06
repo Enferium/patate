@@ -84,9 +84,7 @@ public class Main {
 							sousPlateauDansLequelOnVaJouer = ultimate.getMorpion(r1,r2);
 							indiceDuSousPlateauDansLequelOnVaJouer = (r1+1) * (r2+1);
 							isFirstPlay = false;
-						}
-
-						
+						}						
 						
 						int coup = jsp.demandeCoupProlog(symboleJoueur,sousPlateauDansLequelOnVaJouer);
 						
@@ -141,13 +139,12 @@ public class Main {
 										}
 									}
 								}
-
-
 								indiceDuSousPlateauDansLequelOnVaJouer = getNumCase(ligne,colonne);
 						} else {
 							indiceDuSousPlateauDansLequelOnVaJouer = casePlateau;
 						}
 						
+						System.out.println("INDICE : "+ indiceDuSousPlateauDansLequelOnVaJouer+"   LIGNE : "+ligne+"    COLONNE"+colonne);
 						
 						int coup = jsp.demandeCoupProlog(symboleJoueur,sousPlateauDansLequelOnVaJouer);
 

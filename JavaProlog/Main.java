@@ -67,7 +67,7 @@ public class Main {
 										m = ultimate.getMorpion(i, j);
 										m.verif();
 										m.verifPlein();
-										if (!m.verif || !m.verifPlein) {
+										if (!m.verif && !m.verifPlein) {
 											sousPlateauDansLequelOnVaJouer = m;
 											ligne = i;
 											colonne = j;
